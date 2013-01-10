@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.util.LongHashSet;
+import org.bukkit.craftbukkit.SpigotTimings; // Spigot
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -132,6 +133,8 @@ public abstract class World implements IBlockAccess {
     public ChunkGenerator generator;
     public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
 
+    public final SpigotTimings.WorldTimingsHandler timings; // Spigot
+
     public CraftWorld getWorld() {
         return this.world;
     }
@@ -183,6 +186,7 @@ public abstract class World implements IBlockAccess {
 
         this.worldProvider.a(this);
         this.chunkProvider = this.j();
+        timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         if (!this.worldData.isInitialized()) {
             try {
                 this.a(worldsettings);
@@ -1313,6 +1317,7 @@ public abstract class World implements IBlockAccess {
         this.f.clear();
         this.methodProfiler.c("regular");
 
+        timings.entityTick.startTiming(); // Spigot
         // CraftBukkit start - Use field for loop variable
         for (this.tickPosition = 0; this.tickPosition < this.entityList.size(); ++this.tickPosition) {
             entity = (Entity) this.entityList.get(this.tickPosition);
@@ -1328,7 +1333,9 @@ public abstract class World implements IBlockAccess {
             this.methodProfiler.a("tick");
             if (!entity.dead) {
                 try {
+                    SpigotTimings.tickEntityTimer.startTiming(); // Spigot
                     this.playerJoinedWorld(entity);
+                    SpigotTimings.tickEntityTimer.stopTiming(); // Spigot
                 } catch (Throwable throwable1) {
                     crashreport = CrashReport.a(throwable1, "Ticking entity");
                     crashreportsystemdetails = crashreport.a("Entity being ticked");
@@ -1353,7 +1360,9 @@ public abstract class World implements IBlockAccess {
             this.methodProfiler.b();
         }
 
+        timings.entityTick.stopTiming(); // Spigot
         this.methodProfiler.c("blockEntities");
+        timings.tileEntityTick.startTiming(); // Spigot
         this.M = true;
         // CraftBukkit start - From below, clean up tile entities before ticking them
         if (!this.b.isEmpty()) {
@@ -1369,8 +1378,11 @@ public abstract class World implements IBlockAccess {
 
             if (!tileentity.r() && tileentity.o() && this.isLoaded(tileentity.x, tileentity.y, tileentity.z)) {
                 try {
+                    tileentity.tickTimer.startTiming(); // Spigot
                     tileentity.h();
+                    tileentity.tickTimer.stopTiming(); // Spigot
                 } catch (Throwable throwable2) {
+                    tileentity.tickTimer.stopTiming(); // Spigot
                     crashreport = CrashReport.a(throwable2, "Ticking block entity");
                     crashreportsystemdetails = crashreport.a("Block entity being ticked");
                     tileentity.a(crashreportsystemdetails);
@@ -1390,6 +1402,8 @@ public abstract class World implements IBlockAccess {
             }
         }
 
+        timings.tileEntityTick.stopTiming(); // Spigot
+        timings.tileEntityPending.startTiming(); // Spigot
         this.M = false;
         /* CraftBukkit start - Moved up
         if (!this.b.isEmpty()) {
@@ -1430,6 +1444,7 @@ public abstract class World implements IBlockAccess {
             this.a.clear();
         }
 
+        timings.tileEntityPending.stopTiming(); // Spigot
         this.methodProfiler.b();
         this.methodProfiler.b();
     }
@@ -1454,6 +1469,7 @@ public abstract class World implements IBlockAccess {
         // CraftBukkit start - Use neighbor cache instead of looking up
         Chunk startingChunk = this.getChunkIfLoaded(i >> 4, j >> 4);
         if (!flag || (startingChunk != null && startingChunk.areNeighborsLoaded(2)) /* this.b(i - b0, 0, j - b0, i + b0, 0, j + b0) */) {
+            entity.tickTimer.startTiming(); // Spigot
             // CraftBukkit end
             entity.S = entity.locX;
             entity.T = entity.locY;
@@ -1516,6 +1532,7 @@ public abstract class World implements IBlockAccess {
                     entity.passenger = null;
                 }
             }
+            entity.tickTimer.stopTiming(); // Spigot
         }
     }
 

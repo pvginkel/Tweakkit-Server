@@ -18,6 +18,7 @@ import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
 
 import org.bukkit.craftbukkit.LoggerOutputStream;
+import org.bukkit.craftbukkit.SpigotTimings; // Spigot
 import org.bukkit.event.server.ServerCommandEvent;
 // CraftBukkit end
 
@@ -291,6 +292,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
     }
 
     public void aB() {
+        SpigotTimings.serverCommandTimer.startTiming(); // Spigot
         while (!this.j.isEmpty()) {
             ServerCommand servercommand = (ServerCommand) this.j.remove(0);
 
@@ -303,6 +305,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             this.server.dispatchServerCommand(this.console, servercommand);
             // CraftBukkit end
         }
+        SpigotTimings.serverCommandTimer.stopTiming(); // Spigot
     }
 
     public boolean X() {

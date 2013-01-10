@@ -137,6 +137,7 @@ public class ChunkProviderServer implements IChunkProvider {
         boolean newChunk = false;
 
         if (chunk == null) {
+            world.timings.syncChunkLoadTimer.startTiming(); // Spigot
             chunk = this.loadChunk(i, j);
             if (chunk == null) {
                 if (this.chunkProvider == null) {
@@ -187,6 +188,7 @@ public class ChunkProviderServer implements IChunkProvider {
             }
             // CraftBukkit end
             chunk.loadNearby(this, this, i, j);
+            world.timings.syncChunkLoadTimer.stopTiming(); // Spigot
         }
 
         return chunk;
@@ -219,7 +221,9 @@ public class ChunkProviderServer implements IChunkProvider {
                 if (chunk != null) {
                     chunk.lastSaved = this.world.getTime();
                     if (this.chunkProvider != null) {
+                        world.timings.syncChunkLoadStructuresTimer.startTiming(); // Spigot
                         this.chunkProvider.recreateStructures(i, j);
+                        world.timings.syncChunkLoadStructuresTimer.stopTiming(); // Spigot
                     }
                 }
 
