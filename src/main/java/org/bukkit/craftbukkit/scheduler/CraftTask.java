@@ -1,11 +1,13 @@
 package org.bukkit.craftbukkit.scheduler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.SpigotTimings; // Spigot
+import org.spigotmc.CustomTimingsHandler; // Spigot
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 
-class CraftTask implements BukkitTask, Runnable {
+public class CraftTask implements BukkitTask, Runnable { // Spigot
 
     private volatile CraftTask next = null;
     /**
@@ -22,6 +24,7 @@ class CraftTask implements BukkitTask, Runnable {
     private final Plugin plugin;
     private final int id;
 
+    CustomTimingsHandler timings = null; // Spigot
     CraftTask() {
         this(null, null, -1, -1);
     }
@@ -50,7 +53,22 @@ class CraftTask implements BukkitTask, Runnable {
     }
 
     public void run() {
+        // Spigot start - Wrap custom timings on Tasks
+        if (!Bukkit.getServer().getPluginManager().useTimings()) {
+            task.run();
+            return;
+        }
+        if (timings == null && this.getOwner() != null && this.isSync()) {
+            timings = SpigotTimings.getPluginTaskTimings(this, period);
+        }
+        if (timings != null) {
+            timings.startTiming();
+        }
         task.run();
+        if (timings != null) {
+            timings.stopTiming();
+        }
+        // Spigot end
     }
 
     long getPeriod() {
@@ -77,7 +95,7 @@ class CraftTask implements BukkitTask, Runnable {
         this.next = next;
     }
 
-    Class<? extends Runnable> getTaskClass() {
+    public Class<? extends Runnable> getTaskClass() { // Spigot
         return task.getClass();
     }
 

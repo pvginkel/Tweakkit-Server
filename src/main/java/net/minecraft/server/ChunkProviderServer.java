@@ -132,6 +132,7 @@ public class ChunkProviderServer implements IChunkProvider {
         boolean newChunk = false;
 
         if (chunk == null) {
+            org.bukkit.craftbukkit.SpigotTimings.syncChunkLoadTimer.startTiming(); // Spigot
             chunk = this.loadChunk(i, j);
             if (chunk == null) {
                 if (this.chunkProvider == null) {
@@ -167,6 +168,7 @@ public class ChunkProviderServer implements IChunkProvider {
             }
             // CraftBukkit end
             chunk.a(this, this, i, j);
+            org.bukkit.craftbukkit.SpigotTimings.syncChunkLoadTimer.stopTiming(); // Spigot
         }
 
         return chunk;

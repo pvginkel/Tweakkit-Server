@@ -36,6 +36,7 @@ import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
 
 import org.bukkit.World.Environment;
+import org.bukkit.craftbukkit.SpigotTimings; // Spigot
 import org.bukkit.craftbukkit.util.Waitable;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.world.WorldSaveEvent;
@@ -535,6 +536,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     protected void t() {}
 
     protected void u() throws ExceptionWorldConflict { // CraftBukkit - added throws
+        SpigotTimings.serverTickTimer.startTiming(); // Spigot
         long i = System.nanoTime();
 
         ++this.ticks;
@@ -586,6 +588,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     public void v() {
         this.methodProfiler.a("levels");
 
+        SpigotTimings.schedulerTimer.startTiming(); // Spigot
         // CraftBukkit start
         this.server.getScheduler().mainThreadHeartbeat(this.ticks);
 
@@ -594,7 +597,10 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
             processQueue.remove().run();
         }
 
+        SpigotTimings.schedulerTimer.stopTiming(); // Spigot
+        SpigotTimings.chunkIOTickTimer.startTiming(); // Spigot
         org.bukkit.craftbukkit.chunkio.ChunkIOExecutor.tick();
+        SpigotTimings.chunkIOTickTimer.stopTiming(); // Spigot
 
         // Send time updates to everyone, it will get the right time from the world the player is in.
         if (this.ticks % 20 == 0) {
@@ -645,7 +651,9 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
                 this.methodProfiler.b();
                 this.methodProfiler.a("tracker");
+                worldserver.timings.tracker.startTiming(); // Spigot
                 worldserver.getTracker().updatePlayers();
+                worldserver.timings.tracker.stopTiming(); // Spigot
                 this.methodProfiler.b();
                 this.methodProfiler.b();
             // } // CraftBukkit
@@ -654,16 +662,24 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         }
 
         this.methodProfiler.c("connection");
+        SpigotTimings.connectionTimer.startTiming(); // Spigot
         this.ah().c();
+        SpigotTimings.connectionTimer.stopTiming(); // Spigot
         this.methodProfiler.c("players");
+        SpigotTimings.playerListTimer.startTiming(); // Spigot
         this.t.tick();
+        SpigotTimings.playerListTimer.stopTiming(); // Spigot
         this.methodProfiler.c("tickables");
 
+        SpigotTimings.tickablesTimer.startTiming(); // Spigot
         for (i = 0; i < this.m.size(); ++i) {
             ((IUpdatePlayerListBox) this.m.get(i)).a();
         }
+        SpigotTimings.tickablesTimer.stopTiming(); // Spigot
 
         this.methodProfiler.b();
+        SpigotTimings.serverTickTimer.stopTiming(); // Spigot
+        org.spigotmc.CustomTimingsHandler.tick(); // Spigot
     }
 
     public boolean getAllowNether() {
