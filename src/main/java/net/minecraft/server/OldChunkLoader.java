@@ -94,9 +94,11 @@ public class OldChunkLoader {
 
                 nbttagcompound1.setByte("Y", (byte) (k & 255));
                 nbttagcompound1.setByteArray("Blocks", abyte);
-                nbttagcompound1.setByteArray("Data", nibblearray.a);
-                nbttagcompound1.setByteArray("SkyLight", nibblearray1.a);
-                nbttagcompound1.setByteArray("BlockLight", nibblearray2.a);
+                // Spigot start - a -> getValueArray() accessor
+                nbttagcompound1.setByteArray("Data", nibblearray.getValueArray());
+                nbttagcompound1.setByteArray("SkyLight", nibblearray1.getValueArray());
+                nbttagcompound1.setByteArray("BlockLight", nibblearray2.getValueArray());
+                // Spigot end
                 nbttaglist.add(nbttagcompound1);
             }
         }

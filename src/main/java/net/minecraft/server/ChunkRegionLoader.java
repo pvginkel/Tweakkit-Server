@@ -225,15 +225,15 @@ public class ChunkRegionLoader implements IChunkLoader, IAsyncChunkSaver {
                 nbttagcompound1.setByte("Y", (byte) (chunksection.getYPosition() >> 4 & 255));
                 nbttagcompound1.setByteArray("Blocks", chunksection.getIdArray());
                 if (chunksection.getExtendedIdArray() != null) {
-                    nbttagcompound1.setByteArray("Add", chunksection.getExtendedIdArray().a);
+                    nbttagcompound1.setByteArray("Add", chunksection.getExtendedIdArray().getValueArray()); // Spigot
                 }
 
-                nbttagcompound1.setByteArray("Data", chunksection.getDataArray().a);
-                nbttagcompound1.setByteArray("BlockLight", chunksection.getEmittedLightArray().a);
+                nbttagcompound1.setByteArray("Data", chunksection.getDataArray().getValueArray()); // Spigot
+                nbttagcompound1.setByteArray("BlockLight", chunksection.getEmittedLightArray().getValueArray()); // Spigot
                 if (flag) {
-                    nbttagcompound1.setByteArray("SkyLight", chunksection.getSkyLightArray().a);
+                    nbttagcompound1.setByteArray("SkyLight", chunksection.getSkyLightArray().getValueArray()); // Spigot
                 } else {
-                    nbttagcompound1.setByteArray("SkyLight", new byte[chunksection.getEmittedLightArray().a.length]);
+                    nbttagcompound1.setByteArray("SkyLight", new byte[chunksection.getEmittedLightArray().getValueArray().length]); // Spigot
                 }
 
                 nbttaglist.add(nbttagcompound1);

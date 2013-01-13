@@ -140,7 +140,8 @@ public class ChunkSection {
                 }
             }
         } else {
-            byte[] ext = this.extBlockIds.a;
+            this.extBlockIds.forceToNonTrivialArray(); // Spigot
+            byte[] ext = this.extBlockIds.getValueArray();
             for (int off = 0, off2 = 0; off < blkIds.length;) {
                 byte extid = ext[off2];
                 int l = (blkIds[off] & 0xFF) | ((extid & 0xF) << 8); // Even data
@@ -171,6 +172,12 @@ public class ChunkSection {
                 off++;
                 off2++;
             }
+            // Spigot start
+            this.extBlockIds.detectAndProcessTrivialArray();
+            if (this.extBlockIds.isTrivialArray() && (this.extBlockIds.getTrivialArrayValue() == 0)) {
+                this.extBlockIds = null;
+            }
+            // Spigot end
         }
         this.nonEmptyBlockCount = cntNonEmpty;
         this.tickingBlockCount = cntTicking;
@@ -224,12 +231,11 @@ public class ChunkSection {
     public void setExtendedIdArray(NibbleArray nibblearray) {
         // CraftBukkit start - Don't hang on to an empty nibble array
         boolean empty = true;
-        for (int i = 0; i < nibblearray.a.length; i++) {
-            if (nibblearray.a[i] != 0) {
-                empty = false;
-                break;
-            }
+        // Spigot start
+        if ((!nibblearray.isTrivialArray()) || (nibblearray.getTrivialArrayValue() != 0)) {
+            empty = false;
         }
+        // Spigot end
 
         if (empty) {
             return;
@@ -253,11 +259,11 @@ public class ChunkSection {
 
     // CraftBukkit start - Validate array lengths
     private NibbleArray validateNibbleArray(NibbleArray nibbleArray) {
-        if (nibbleArray != null && nibbleArray.a.length < 2048) {
-            byte[] newArray = new byte[2048];
-            System.arraycopy(nibbleArray.a, 0, newArray, 0, ((nibbleArray.a.length > 2048) ? 2048 : nibbleArray.a.length));
-            nibbleArray = new NibbleArray(newArray, 4);
+        // Spigot start - fix for more awesome nibble arrays
+        if (nibbleArray != null && nibbleArray.getByteLength() < 2048) {
+            nibbleArray.resizeArray(2048);
         }
+        // Spigot end
 
         return nibbleArray;
     }
