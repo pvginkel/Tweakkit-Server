@@ -291,20 +291,18 @@ public abstract class World implements IBlockAccess {
         return this.getChunkAt(i >> 4, j >> 4);
     }
 
+    // Spigot start
     public Chunk getChunkAt(int i, int j) {
-        // CraftBukkit start
-        Chunk result = null;
-        synchronized (this.chunkLock) {
-            if (this.lastChunkAccessed == null || this.lastXAccessed != i || this.lastZAccessed != j) {
-                this.lastChunkAccessed = this.chunkProvider.getOrCreateChunk(i, j);
-                this.lastXAccessed = i;
-                this.lastZAccessed = j;
-            }
-            result = this.lastChunkAccessed;
+        //synchronized (this.chunkLock) {
+        Chunk result = this.lastChunkAccessed; // Exploit fact that read is atomic 
+        if (result == null || result.locX != i || result.locZ != j) {
+            result = this.chunkProvider.getOrCreateChunk(i, j);
+            this.lastChunkAccessed = result; // Exploit fact that write is atomic
         }
+        //}
         return result;
-        // CraftBukkit end
     }
+    // Spigot end
 
     public boolean setTypeAndData(int i, int j, int k, Block block, int l, int i1) {
         if (i >= -30000000 && k >= -30000000 && i < 30000000 && k < 30000000) {
