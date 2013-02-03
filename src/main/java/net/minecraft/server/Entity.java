@@ -90,7 +90,7 @@ public abstract class Entity {
     public int ticksLived;
     public int maxFireTicks;
     public int fireTicks; // CraftBukkit - private -> public
-    protected boolean inWater;
+    public boolean inWater; // Spigot - protected -> public
     public int noDamageTicks;
     private boolean justCreated;
     protected boolean fireProof;
@@ -114,7 +114,13 @@ public abstract class Entity {
     public boolean valid; // CraftBukkit
     public org.bukkit.projectiles.ProjectileSource projectileSource; // CraftBukkit - For projectiles only
 
+    // Spigot start
     public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getEntityTimings(this); // Spigot
+    public final byte activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
+    public final boolean defaultActivationState;
+    public long activatedTick = 0;
+    public void inactiveTick() { }
+    // Spigot end
 
     public int getId() {
         return this.id;
@@ -141,7 +147,12 @@ public abstract class Entity {
         this.setPosition(0.0D, 0.0D, 0.0D);
         if (world != null) {
             this.dimension = world.worldProvider.dimension;
+            // Spigot start
+            this.defaultActivationState = org.spigotmc.ActivationRange.initializeEntityActivationState(this, world.spigotConfig);
+        } else {
+            this.defaultActivationState = false;
         }
+        // Spigot end
 
         this.datawatcher = new DataWatcher(this);
         this.datawatcher.a(0, Byte.valueOf((byte) 0));
