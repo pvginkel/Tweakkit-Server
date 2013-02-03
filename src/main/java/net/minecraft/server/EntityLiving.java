@@ -84,6 +84,13 @@ public abstract class EntityLiving extends Entity {
     public int maxAirTicks = 300;
     ArrayList<org.bukkit.inventory.ItemStack> drops = null;
     // CraftBukkit end
+    // Spigot start
+    public void inactiveTick()
+    {
+        super.inactiveTick();
+        ++this.aU; // Above all the floats
+    }
+    // Spigot end
 
     public EntityLiving(World world) {
         super(world);
