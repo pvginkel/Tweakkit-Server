@@ -78,6 +78,13 @@ public abstract class EntityLiving extends Entity {
     public int expToDrop;
     public int maxAirTicks = 300;
     // CraftBukkit end
+    // Spigot start
+    public void inactiveTick()
+    {
+        super.inactiveTick();
+        ++this.aV;
+    }
+    // Spigot end
 
     public EntityLiving(World world) {
         super(world);
