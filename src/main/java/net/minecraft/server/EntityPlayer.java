@@ -62,6 +62,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
     public boolean keepLevel = false;
     public double maxHealthCache;
     public boolean joining = true;
+    public int lastPing = -1; // Spigot
     // CraftBukkit end
     // Spigot start
     public boolean collidesWithEntities = true;
