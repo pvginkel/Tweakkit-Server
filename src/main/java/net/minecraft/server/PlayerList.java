@@ -793,6 +793,8 @@ public abstract class PlayerList {
         // CraftBukkit end
     }
 
+    private int currentPing = 0;
+
     public void tick() {
         if (++this.t > 600) {
             this.t = 0;
@@ -805,6 +807,30 @@ public abstract class PlayerList {
             this.sendAll(new PacketPlayOutPlayerInfo(entityplayer.getName(), true, entityplayer.ping));
         }
         // CraftBukkit end */
+        // Spigot start
+        try
+        {
+            if ( !players.isEmpty() )
+            {
+                currentPing = ( currentPing + 1 ) % this.players.size();
+                EntityPlayer player = (EntityPlayer) this.players.get( currentPing );
+                if ( player.lastPing == -1 || Math.abs( player.ping - player.lastPing ) > 20 )
+                {
+                    Packet packet = new PacketPlayOutPlayerInfo( player.listName, true, player.ping );
+                    for ( EntityPlayer splayer : (List<EntityPlayer>) this.players )
+                    {
+                        if ( splayer.getBukkitEntity().canSee( player.getBukkitEntity() ) )
+                        {
+                            splayer.playerConnection.sendPacket( packet );
+                        }
+                    }
+                    player.lastPing = player.ping;
+                }
+            }
+        } catch ( Exception e ) {
+            // Better safe than sorry :)
+        }
+        // Spigot end
     }
 
     public void sendAll(Packet packet) {
