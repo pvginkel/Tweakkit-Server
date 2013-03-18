@@ -14,6 +14,12 @@ public class CraftSign extends CraftBlockState implements Sign {
 
         CraftWorld world = (CraftWorld) block.getWorld();
         sign = (TileEntitySign) world.getTileEntityAt(getX(), getY(), getZ());
+        // Spigot start
+        if (sign == null) {
+            lines = new String[]{"", "", "", ""};
+            return;
+        }
+        // Spigot end
         lines = new String[sign.lines.length];
         System.arraycopy(sign.lines, 0, lines, 0, lines.length);
     }
@@ -34,7 +40,7 @@ public class CraftSign extends CraftBlockState implements Sign {
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
 
-        if (result) {
+        if (result && sign != null) { // Spigot, add null check
             sign.lines = sanitizeLines(lines);
             sign.update();
         }
