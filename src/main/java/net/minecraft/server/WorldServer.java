@@ -55,7 +55,7 @@ public class WorldServer extends World {
         // CraftBukkit end
         this.server = minecraftserver;
         this.tracker = new EntityTracker(this);
-        this.manager = new PlayerChunkMap(this);
+        this.manager = new PlayerChunkMap(this, spigotConfig.viewDistance); // Spigot
         if (this.entitiesById == null) {
             this.entitiesById = new IntHashMap();
         }
