@@ -117,7 +117,10 @@ public class EntityItem extends Entity {
     }
 
     private void k() {
-        Iterator iterator = this.world.a(EntityItem.class, this.boundingBox.grow(0.5D, 0.0D, 0.5D)).iterator();
+        // Spigot start
+        double radius = world.spigotConfig.itemMerge;
+        Iterator iterator = this.world.a(EntityItem.class, this.boundingBox.grow(radius, radius, radius)).iterator();
+        // Spigot end
 
         while (iterator.hasNext()) {
             EntityItem entityitem = (EntityItem) iterator.next();
@@ -148,11 +151,13 @@ public class EntityItem extends Entity {
             } else if (itemstack1.count + itemstack.count > itemstack1.getMaxStackSize()) {
                 return false;
             } else {
-                itemstack1.count += itemstack.count;
-                entityitem.pickupDelay = Math.max(entityitem.pickupDelay, this.pickupDelay);
-                entityitem.age = Math.min(entityitem.age, this.age);
-                entityitem.setItemStack(itemstack1);
-                this.die();
+                // Spigot start
+                itemstack.count += itemstack1.count;
+                this.pickupDelay = Math.max(entityitem.pickupDelay, this.pickupDelay);
+                this.age = Math.min(entityitem.age, this.age);
+                this.setItemStack(itemstack);
+                entityitem.die();
+                // Spigot end
                 return true;
             }
         } else {
