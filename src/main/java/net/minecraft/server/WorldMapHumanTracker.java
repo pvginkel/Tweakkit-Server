@@ -37,23 +37,29 @@ public class WorldMapHumanTracker {
             int i;
             int j;
 
-            org.bukkit.craftbukkit.map.RenderData render = this.worldMap.mapView.render((org.bukkit.craftbukkit.entity.CraftPlayer) trackee.getBukkitEntity()); // CraftBukkit
+            // Spigot start
+            boolean custom = this.worldMap.mapView.renderers.size() > 1 || !(this.worldMap.mapView.renderers.get(0) instanceof org.bukkit.craftbukkit.map.CraftMapRenderer);
+            org.bukkit.craftbukkit.map.RenderData render = (custom) ? this.worldMap.mapView.render((org.bukkit.craftbukkit.entity.CraftPlayer) trackee.getBukkitEntity()) : null; // CraftBukkit
 
             if (--this.g < 0) {
                 this.g = 4;
-                abyte = new byte[render.cursors.size() * 3 + 1]; // CraftBukkit
+                abyte = new byte[((custom) ? render.cursors.size() : this.worldMap.decorations.size()) * 3 + 1]; // CraftBukkit
                 abyte[0] = 1;
                 i = 0;
 
                 // CraftBukkit start
-                for (i = 0; i < render.cursors.size(); ++i) {
-                    org.bukkit.map.MapCursor cursor = render.cursors.get(i);
-                    if (!cursor.isVisible()) continue;
 
-                    abyte[i * 3 + 1] = (byte) (cursor.getRawType() << 4 | cursor.getDirection() & 15);
-                    abyte[i * 3 + 2] = (byte) cursor.getX();
-                    abyte[i * 3 + 3] = (byte) cursor.getY();
+                // Spigot start
+                for (Iterator iterator = ((custom) ? render.cursors.iterator() : this.worldMap.decorations.values().iterator()); iterator.hasNext(); ++i) {
+                    org.bukkit.map.MapCursor cursor = (custom) ? (org.bukkit.map.MapCursor) iterator.next() : null;
+                    if (cursor != null && !cursor.isVisible()) continue;
+                    WorldMapDecoration deco = (custom) ? null : (WorldMapDecoration) iterator.next();
+
+                    abyte[i * 3 + 1] = (byte) (((custom) ? cursor.getRawType() : deco.type) << 4 | ((custom) ? cursor.getDirection() : deco.rotation) & 15);
+                    abyte[i * 3 + 2] = (byte) ((custom) ? cursor.getX() : deco.locX);
+                    abyte[i * 3 + 3] = (byte) ((custom) ? cursor.getY() : deco.locY);
                 }
+                // Spigot end
                 // CraftBukkit end
 
                 boolean flag = !itemstack.A();
@@ -88,7 +94,7 @@ public class WorldMapHumanTracker {
                     abyte1[2] = (byte) j;
 
                     for (int i1 = 0; i1 < abyte1.length - 3; ++i1) {
-                        abyte1[i1 + 3] = render.buffer[(i1 + j) * 128 + i]; // CraftBukkit
+                        abyte1[i1 + 3] = ((custom) ? render.buffer : this.worldMap.colors)[(i1 + j) * 128 + i];
                     }
 
                     this.c[i] = -1;
