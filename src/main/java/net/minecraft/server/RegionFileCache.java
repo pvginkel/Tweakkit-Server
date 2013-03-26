@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class RegionFileCache {
 
-    private static final Map a = new HashMap();
+    public static final Map a = new HashMap(); // CraftBukkit - private -> public
 
     public static synchronized RegionFile a(File file1, int i, int j) {
         File file2 = new File(file1, "region");
