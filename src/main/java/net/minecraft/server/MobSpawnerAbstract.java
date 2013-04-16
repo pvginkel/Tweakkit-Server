@@ -5,7 +5,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.event.entity.CreatureSpawnEvent; // CraftBukkit
+// CraftBukkit start
+import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.SpawnerSpawnEvent;
+// CraftBukkit end
 
 public abstract class MobSpawnerAbstract {
 
@@ -128,7 +132,12 @@ public abstract class MobSpawnerAbstract {
 
             entity.f(nbttagcompound);
             if (entity.world != null) {
-                entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
+                // CraftBukkit start - call SpawnerSpawnEvent, abort if cancelled
+                SpawnerSpawnEvent event = CraftEventFactory.callSpawnerSpawnEvent(entity, this.b(), this.c(), this.d());
+                if (!event.isCancelled()) {
+                    entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
+                }
+                // CraftBukkit end
             }
 
             NBTTagCompound nbttagcompound1;
@@ -152,6 +161,11 @@ public abstract class MobSpawnerAbstract {
 
                     entity2.f(nbttagcompound2);
                     entity2.setPositionRotation(entity1.locX, entity1.locY, entity1.locZ, entity1.yaw, entity1.pitch);
+                    // CraftBukkit start - call SpawnerSpawnEvent, skip if cancelled
+                    SpawnerSpawnEvent event = CraftEventFactory.callSpawnerSpawnEvent(entity2, this.b(), this.c(), this.d());
+                    if (event.isCancelled()) {
+                        continue;
+                    }
                     if (entity.world != null) {
                         entity.world.addEntity(entity2, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
                     }
@@ -163,7 +177,12 @@ public abstract class MobSpawnerAbstract {
             }
         } else if (entity instanceof EntityLiving && entity.world != null) {
             ((EntityInsentient) entity).prepare((GroupDataEntity) null);
-            this.a().addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
+            // Spigot start - call SpawnerSpawnEvent, abort if cancelled
+            SpawnerSpawnEvent event = CraftEventFactory.callSpawnerSpawnEvent(entity, this.b(), this.c(), this.d());
+            if (!event.isCancelled()) {
+                this.a().addEntity(entity, CreatureSpawnEvent.SpawnReason.SPAWNER); // CraftBukkit
+            }
+            // Spigot end
         }
 
         return entity;
