@@ -237,9 +237,16 @@ public abstract class World implements IBlockAccess {
         return this.getType(i, k, j);
     }
 
-    public Block getType(int i, int j, int k) {
+    // Spigot start
+    public Block getType(int i, int j, int k)
+    {
+        return getType( i, j, k, true );
+    }
+
+    public Block getType(int i, int j, int k, boolean useCaptured) {
         // CraftBukkit start - tree generation
-        if (captureTreeGeneration) {
+        if (captureTreeGeneration && useCaptured) {
+    // Spigot end
             Iterator<BlockState> it = capturedBlockStates.iterator();
             while (it.hasNext()) {
                 BlockState previous = it.next();
@@ -551,6 +558,7 @@ public abstract class World implements IBlockAccess {
         this.e(i, j + 1, k, block);
         this.e(i, j, k - 1, block);
         this.e(i, j, k + 1, block);
+        spigotConfig.antiXrayInstance.updateNearbyBlocks(this, i, j, k); // Spigot
     }
 
     public void b(int i, int j, int k, Block block, int l) {
