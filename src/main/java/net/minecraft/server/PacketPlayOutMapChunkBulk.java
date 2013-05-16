@@ -26,6 +26,7 @@ public class PacketPlayOutMapChunkBulk extends Packet {
         }
     };
     // CraftBukkit end
+    private World world; // Spigot
 
     public PacketPlayOutMapChunkBulk() {}
 
@@ -44,6 +45,9 @@ public class PacketPlayOutMapChunkBulk extends Packet {
             Chunk chunk = (Chunk) list.get(k);
             ChunkMap chunkmap = PacketPlayOutMapChunk.a(chunk, true, '\uffff');
 
+            // Spigot start
+            world = chunk.world;
+            /*
             if (buildBuffer.length < j + chunkmap.a.length) {
                 byte[] abyte = new byte[j + chunkmap.a.length];
 
@@ -52,6 +56,8 @@ public class PacketPlayOutMapChunkBulk extends Packet {
             }
 
             System.arraycopy(chunkmap.a, 0, buildBuffer, j, chunkmap.a.length);
+            */
+            // Spigot end
             j += chunkmap.a.length;
             this.a[k] = chunk.locX;
             this.b[k] = chunk.locZ;
@@ -79,6 +85,22 @@ public class PacketPlayOutMapChunkBulk extends Packet {
         if (this.buffer != null) {
             return;
         }
+        // Spigot start
+        int finalBufferSize = 0;
+        // Obfuscate all sections
+        for (int i = 0; i < a.length; i++) {
+            world.spigotConfig.antiXrayInstance.obfuscate(a[i], b[i], c[i], inflatedBuffers[i], world);
+            finalBufferSize += inflatedBuffers[i].length;
+        }
+
+        // Now it's time to efficiently copy the chunk to the build buffer
+        buildBuffer = new byte[finalBufferSize];
+        int bufferLocation = 0;
+        for (int i = 0; i < a.length; i++) {
+            System.arraycopy(inflatedBuffers[i], 0, buildBuffer, bufferLocation, inflatedBuffers[i].length);
+            bufferLocation += inflatedBuffers[i].length;
+        }
+        // Spigot end
 
         Deflater deflater = localDeflater.get();
         deflater.reset();

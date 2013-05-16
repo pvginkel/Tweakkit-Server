@@ -28,6 +28,7 @@ public class PacketPlayOutMapChunk extends Packet {
 
         this.d = chunkmap.c;
         this.c = chunkmap.b;
+        chunk.world.spigotConfig.antiXrayInstance.obfuscateSync(chunk.locX, chunk.locZ, i, chunkmap.a, chunk.world); // Spigot
 
         try {
             this.f = chunkmap.a;
