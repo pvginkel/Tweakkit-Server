@@ -86,6 +86,7 @@ public class EntityFallingBlock extends Entity {
                     }
 
                     this.world.setAir(i, j, k);
+                    world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, i, j, k); // Spigot
                 }
 
                 if (this.onGround) {
@@ -101,6 +102,7 @@ public class EntityFallingBlock extends Entity {
                             }
                             this.world.setTypeAndData(i, j, k, this.id, this.data, 3);
                             // CraftBukkit end
+                            world.spigotConfig.antiXrayInstance.updateNearbyBlocks(world, i, j, k); // Spigot
 
                             if (this.id instanceof BlockFalling) {
                                 ((BlockFalling) this.id).a(this.world, i, j, k, this.data);
