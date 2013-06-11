@@ -307,10 +307,20 @@ public class WorldServer extends World {
         // CraftBukkit start
         // Iterator iterator = this.chunkTickList.iterator();
 
-        for (long chunkCoord : this.chunkTickList.popAll()) {
+        // Spigot start
+        for (net.minecraft.util.gnu.trove.iterator.TLongShortIterator iter = chunkTickList.iterator(); iter.hasNext();) {
+            iter.advance();
+            long chunkCoord = iter.key();
+            int chunkX = World.keyToX(chunkCoord);
+            int chunkZ = World.keyToZ(chunkCoord);
+            // If unloaded, or in procedd of being unloaded, drop it
+            if ( ( !this.isChunkLoaded( chunkX, chunkZ ) ) || ( this.chunkProviderServer.unloadQueue.contains( chunkX, chunkZ ) ) )
+            {
+                iter.remove();
+                continue;
+            }
+            // Spigot end
             // ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair) iterator.next();
-            int chunkX = LongHash.msw(chunkCoord);
-            int chunkZ = LongHash.lsw(chunkCoord);
             int k = chunkX * 16;
             int l = chunkZ * 16;
 
@@ -401,6 +411,7 @@ public class WorldServer extends World {
 
                         if (block.isTicking()) {
                             ++i;
+                            this.growthOdds = (iter.value() < 1) ? this.modifiedOdds : 100; // Spigot - grow fast if no players are in this chunk (value = player count)
                             block.a(this, k2 + k, i3 + chunksection.getYPosition(), l2 + l, this.random);
                         }
                     }
@@ -409,6 +420,12 @@ public class WorldServer extends World {
 
             this.methodProfiler.b();
         }
+        // Spigot Start
+        if ( spigotConfig.clearChunksOnTick )
+        {
+            chunkTickList.clear();
+        }
+        // Spigot End
     }
 
     public boolean a(int i, int j, int k, Block block) {
