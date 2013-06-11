@@ -1152,8 +1152,15 @@ public abstract class PlayerList {
     }
 
     public void u() {
-        for (int i = 0; i < this.players.size(); ++i) {
-            ((EntityPlayer) this.players.get(i)).playerConnection.disconnect(this.server.server.getShutdownMessage()); // CraftBukkit - add custom shutdown message
+        while (!this.players.isEmpty()) {
+            // Spigot start
+            EntityPlayer p = (EntityPlayer) this.players.get( 0 );
+            p.playerConnection.disconnect( this.server.server.getShutdownMessage() );
+            if ( ( !this.players.isEmpty() ) && ( this.players.get( 0 ) == p ) )
+            {
+                this.players.remove( 0 ); // Prevent shutdown hang if already disconnected
+            }
+            // Spigot end
         }
     }
 
