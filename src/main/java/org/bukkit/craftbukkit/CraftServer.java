@@ -1290,7 +1290,7 @@ public final class CraftServer implements Server {
     }
 
     public OfflinePlayer getOfflinePlayer(String name) {
-        return getOfflinePlayer(name, true);
+        return getOfflinePlayer(name, false); // Spigot
     }
 
     public OfflinePlayer getOfflinePlayer(String name, boolean search) {
