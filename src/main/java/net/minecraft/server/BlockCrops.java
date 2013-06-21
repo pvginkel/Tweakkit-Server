@@ -29,7 +29,7 @@ public class BlockCrops extends BlockPlant implements IBlockFragilePlantElement 
             if (l < 7) {
                 float f = this.n(world, i, j, k);
 
-                if (random.nextInt((int) (25.0F / f) + 1) == 0) {
+                if (random.nextInt((int) (world.growthOdds / world.spigotConfig.wheatModifier * (25.0F / f)) + 1) == 0) { // Spigot
                     ++l;
                     CraftEventFactory.handleBlockGrowEvent(world, i, j, k, this, l); // CraftBukkit
                 }

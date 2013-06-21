@@ -39,7 +39,8 @@ public class BlockGrass extends Block implements IBlockFragilePlantElement {
                 }
                 // CraftBukkit end
             } else if (world.getLightLevel(i, j + 1, k) >= 9) {
-                for (int l = 0; l < 4; ++l) {
+                int numGrowth = Math.min(4, Math.max(20, (int) (4 * 100F / world.growthOdds))); // Spigot
+                for (int l = 0; l < numGrowth; ++l) { // Spigot
                     int i1 = i + random.nextInt(3) - 1;
                     int j1 = j + random.nextInt(5) - 3;
                     int k1 = k + random.nextInt(3) - 1;

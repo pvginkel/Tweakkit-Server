@@ -19,7 +19,7 @@ public class BlockMushroom extends BlockPlant implements IBlockFragilePlantEleme
 
     public void a(World world, int i, int j, int k, Random random) {
         final int sourceX = i, sourceY = j, sourceZ = k; // CraftBukkit
-        if (random.nextInt(25) == 0) {
+        if (random.nextInt(Math.max(1, (int) world.growthOdds / world.spigotConfig.mushroomModifier * 25)) == 0) { // Spigot
             byte b0 = 4;
             int l = 5;
 
