@@ -40,6 +40,7 @@ public class Chunk {
     public int r;
     public long s;
     private int x;
+    protected net.minecraft.util.gnu.trove.map.hash.TObjectIntHashMap<Class> entityCount = new net.minecraft.util.gnu.trove.map.hash.TObjectIntHashMap<Class>(); // Spigot
 
     // CraftBukkit start - Neighbor loaded cache for chunk lighting and entity ticking
     private int neighbors = 0x1 << 12;
@@ -635,6 +636,22 @@ public class Chunk {
         entity.ai = k;
         entity.aj = this.locZ;
         this.entitySlices[k].add(entity);
+        // Spigot start - increment creature type count
+        // Keep this synced up with World.a(Class)
+        if (entity instanceof EntityInsentient) {
+            EntityInsentient entityinsentient = (EntityInsentient) entity;
+            if (entityinsentient.isTypeNotPersistent() && entityinsentient.isPersistent()) {
+                return;
+            }
+        }
+        for ( EnumCreatureType creatureType : EnumCreatureType.values() )
+        {
+            if ( creatureType.a().isAssignableFrom( entity.getClass() ) )
+            {
+                this.entityCount.adjustOrPutValue( creatureType.a(), 1, 1 );
+            }
+        }
+        // Spigot end
     }
 
     public void b(Entity entity) {
@@ -651,6 +668,22 @@ public class Chunk {
         }
 
         this.entitySlices[i].remove(entity);
+        // Spigot start - decrement creature type count
+        // Keep this synced up with World.a(Class)
+        if (entity instanceof EntityInsentient) {
+            EntityInsentient entityinsentient = (EntityInsentient) entity;
+            if (entityinsentient.isTypeNotPersistent() && entityinsentient.isPersistent()) {
+                return;
+            }
+        }
+        for ( EnumCreatureType creatureType : EnumCreatureType.values() )
+        {
+            if ( creatureType.a().isAssignableFrom( entity.getClass() ) )
+            {
+                this.entityCount.adjustValue( creatureType.a(), -1 );
+            }
+        }
+        // Spigot end
     }
 
     public boolean d(int i, int j, int k) {
