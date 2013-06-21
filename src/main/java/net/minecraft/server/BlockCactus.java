@@ -23,7 +23,7 @@ public class BlockCactus extends Block {
             if (l < 3) {
                 int i1 = world.getData(i, j, k);
 
-                if (i1 == 15) {
+                if (i1 >= (byte) range(3, (world.growthOdds / world.spigotConfig.cactusModifier * 15) + 0.5F, 15)) { // Spigot
                     CraftEventFactory.handleBlockGrowEvent(world, i, j + 1, k, this, 0); // CraftBukkit
                     world.setData(i, j, k, 0, 4);
                     this.doPhysics(world, i, j + 1, k, this);
