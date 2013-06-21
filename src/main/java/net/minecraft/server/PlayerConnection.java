@@ -950,7 +950,12 @@ public class PlayerConnection implements PacketPlayInListener {
         }
 
         try {
-            this.c.info(event.getPlayer().getName() + " issued server command: " + event.getMessage());
+            // Spigot Start
+            if ( org.spigotmc.SpigotConfig.logCommands )
+            {
+                this.c.info(event.getPlayer().getName() + " issued server command: " + event.getMessage());
+            }
+            // Spigot end
             if (this.server.dispatchCommand(event.getPlayer(), event.getMessage().substring(1))) {
                 org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.stopTiming(); // Spigot
                 return;

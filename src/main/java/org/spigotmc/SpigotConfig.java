@@ -130,4 +130,10 @@ public class SpigotConfig
         config.addDefault( path, def );
         return config.getString( path, config.getString( path ) );
     }
+
+    public static boolean logCommands;
+    private static void logCommands()
+    {
+        logCommands = getBoolean( "commands.log", true );
+    }
 }
