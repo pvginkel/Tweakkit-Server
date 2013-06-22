@@ -177,4 +177,11 @@ public class SpigotWorldConfig
         hopperCheck = getInt( "ticks-per.hopper-check", hopperTransfer );
         log( "Hopper Transfer: " + hopperTransfer + " Hopper Check: " + hopperCheck );
     }
+
+    public boolean randomLightUpdates;
+    private void lightUpdates()
+    {
+        randomLightUpdates = getBoolean( "random-light-updates", false );
+        log( "Random Lighting Updates: " + randomLightUpdates );
+    }
 }
