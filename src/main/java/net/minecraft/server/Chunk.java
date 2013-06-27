@@ -760,6 +760,15 @@ public class Chunk {
 
         while (iterator.hasNext()) {
             TileEntity tileentity = (TileEntity) iterator.next();
+            // Spigot Start
+            if ( tileentity instanceof IInventory )
+            {
+                for ( org.bukkit.craftbukkit.entity.CraftHumanEntity h : new ArrayList<org.bukkit.craftbukkit.entity.CraftHumanEntity>( (List) ( (IInventory) tileentity ).getViewers() ) )
+                {
+                    h.getHandle().closeInventory();
+                }
+            }
+            // Spigot End
 
             this.world.a(tileentity);
         }
@@ -769,6 +778,15 @@ public class Chunk {
             java.util.Iterator<Object> iter = this.entitySlices[i].iterator();
             while (iter.hasNext()) {
                 Entity entity = (Entity) iter.next();
+                // Spigot Start
+                if ( entity instanceof IInventory )
+                {
+                    for ( org.bukkit.craftbukkit.entity.CraftHumanEntity h : new ArrayList<org.bukkit.craftbukkit.entity.CraftHumanEntity>( (List) ( (IInventory) entity ).getViewers() ) )
+                    {
+                        h.getHandle().closeInventory();
+                    }
+                }
+                // Spigot End
 
                 // Do not pass along players, as doing so can get them stuck outside of time.
                 // (which for example disables inventory icon updates and prevents block breaking)
