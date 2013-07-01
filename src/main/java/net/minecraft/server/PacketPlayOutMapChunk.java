@@ -24,7 +24,7 @@ public class PacketPlayOutMapChunk extends Packet {
         this.b = chunk.locZ;
         this.g = flag;
         ChunkMap chunkmap = a(chunk, flag, i);
-        Deflater deflater = new Deflater(-1);
+        Deflater deflater = new Deflater(4); // Spigot
 
         this.d = chunkmap.c;
         this.c = chunkmap.b;
