@@ -22,7 +22,7 @@ public class PacketPlayOutMapChunkBulk extends Packet {
         @Override
         protected Deflater initialValue() {
             // Don't use higher compression level, slows things down too much
-            return new Deflater(6);
+            return new Deflater(4); // Spigot 6 -> 4
         }
     };
     // CraftBukkit end
