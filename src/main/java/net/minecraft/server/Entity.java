@@ -1450,6 +1450,7 @@ public abstract class Entity {
                     }
                 }
                 // CraftBukkit end
+                pluginManager.callEvent( new org.spigotmc.event.entity.EntityDismountEvent( this.getBukkitEntity(), this.vehicle.getBukkitEntity() ) ); // Spigot
 
                 this.setPositionRotation(this.vehicle.locX, this.vehicle.boundingBox.b + (double) this.vehicle.length, this.vehicle.locZ, this.yaw, this.pitch);
                 this.vehicle.passenger = null;
@@ -1485,6 +1486,17 @@ public abstract class Entity {
                 }
             }
             // CraftBukkit end
+            // Spigot Start
+            if ( entity.world.isChunkLoaded( (int) entity.locX >> 4, (int) entity.locZ >> 4 ) )
+            {
+                org.spigotmc.event.entity.EntityMountEvent event = new org.spigotmc.event.entity.EntityMountEvent( this.getBukkitEntity(), entity.getBukkitEntity() );
+                pluginManager.callEvent( event );
+                if ( event.isCancelled() )
+                {
+                    return;
+                }
+            }
+            // Spigot End
 
             if (this.vehicle != null) {
                 this.vehicle.passenger = null;
