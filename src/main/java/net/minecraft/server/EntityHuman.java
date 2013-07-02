@@ -323,6 +323,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
     public void setPassengerOf(Entity entity) {
         // CraftBukkit end
         if (this.vehicle != null && entity == null) {
+            world.getServer().getPluginManager().callEvent( new org.spigotmc.event.entity.EntityDismountEvent( this.getBukkitEntity(), this.vehicle.getBukkitEntity() ) ); // Spigot
             // CraftBukkit start - use parent method instead to correctly fire VehicleExitEvent
             Entity originalVehicle = this.vehicle;
             // First statement moved down, second statement handled in parent method.
