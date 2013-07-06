@@ -309,8 +309,10 @@ public final class CraftServer implements Server {
         updater.getOnUpdate().addAll(configuration.getStringList("auto-updater.on-update"));
         updater.check(serverVersion);
 
-        loadPlugins();
-        enablePlugins(PluginLoadOrder.STARTUP);
+        // Spigot Start - Moved to old location of new DedicatedPlayerList in DedicatedServer
+        // loadPlugins();
+        // enablePlugins(PluginLoadOrder.STARTUP);
+        // Spigot End
     }
 
     public boolean getCommandBlockOverride(String command) {
@@ -736,6 +738,7 @@ public final class CraftServer implements Server {
         playerList.getIPBans().load();
         playerList.getNameBans().load();
 
+        org.spigotmc.SpigotConfig.init(); // Spigot
         for (WorldServer world : console.worlds) {
             world.difficulty = difficulty;
             world.setSpawnFlags(monsters, animals);
@@ -750,11 +753,14 @@ public final class CraftServer implements Server {
             } else {
                 world.ticksPerMonsterSpawns = this.getTicksPerMonsterSpawns();
             }
+            world.spigotConfig.init(); // Spigot
         }
 
         pluginManager.clearPlugins();
         commandMap.clearCommands();
         resetRecipes();
+        org.spigotmc.SpigotConfig.registerCommands(); // Spigot
+
         overrideAllCommandBlockCommands = commandsConfiguration.getStringList("command-block-overrides").contains("*");
 
         int pollCount = 0;
