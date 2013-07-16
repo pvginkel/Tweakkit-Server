@@ -54,7 +54,7 @@ public class BlockTNT extends Block {
 
     public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
         if (entityhuman.bF() != null && entityhuman.bF().getItem() == Items.FLINT_AND_STEEL) {
-            this.a(world, i, j, k, 1, entityhuman);
+            this.a(world, i, j, k, 1, (EntityLiving) entityhuman); // Spigot - Fix decompile error!
             world.setAir(i, j, k);
             entityhuman.bF().damage(1, entityhuman);
             return true;
@@ -68,6 +68,11 @@ public class BlockTNT extends Block {
             EntityArrow entityarrow = (EntityArrow) entity;
 
             if (entityarrow.isBurning()) {
+                // CraftBukkit start
+                if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(entityarrow, i, j, k, Blocks.AIR, 0).isCancelled()) {
+                    return;
+                }
+                // CraftBukkit end
                 this.a(world, i, j, k, 1, entityarrow.shooter instanceof EntityLiving ? (EntityLiving) entityarrow.shooter : null);
                 world.setAir(i, j, k);
             }
