@@ -63,6 +63,21 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
     public double maxHealthCache;
     public boolean joining = true;
     // CraftBukkit end
+    // Spigot start
+    public boolean collidesWithEntities = true;
+
+    @Override
+    public boolean R()
+    {
+        return this.collidesWithEntities && super.R(); // (first !this.isDead near bottom of EntityLiving)
+    }
+
+    @Override
+    public boolean S()
+    {
+        return this.collidesWithEntities && super.S(); // (second !this.isDead near bottom of EntityLiving)
+    }
+    // Spigot end
 
     public EntityPlayer(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
         super(worldserver, gameprofile);

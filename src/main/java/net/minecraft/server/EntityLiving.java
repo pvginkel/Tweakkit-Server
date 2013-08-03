@@ -1596,7 +1596,7 @@ public abstract class EntityLiving extends Entity {
     protected void bo() {
         List list = this.world.getEntities(this, this.boundingBox.grow(0.20000000298023224D, 0.0D, 0.20000000298023224D));
 
-        if (list != null && !list.isEmpty()) {
+        if (this.R() && list != null && !list.isEmpty()) { // Spigot: Add this.R() condition
             for (int i = 0; i < list.size(); ++i) {
                 Entity entity = (Entity) list.get(i);
 
