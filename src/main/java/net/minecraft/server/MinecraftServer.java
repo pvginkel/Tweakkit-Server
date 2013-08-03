@@ -585,11 +585,11 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.g[this.ticks % 100] = System.nanoTime() - i;
         this.methodProfiler.b();
         this.methodProfiler.a("snooper");
-        if (!this.l.d() && this.ticks > 100) {
+        if (getSnooperEnabled() && !this.l.d() && this.ticks > 100) { // Spigot
             this.l.a();
         }
 
-        if (this.ticks % 6000 == 0) {
+        if (getSnooperEnabled() && this.ticks % 6000 == 0) { // Spigot
             this.l.b();
         }
 
