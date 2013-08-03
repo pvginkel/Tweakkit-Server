@@ -430,7 +430,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
 
             List list = this.world.getEntities(this, axisalignedbb);
 
-            if (list != null) {
+            if (list != null && this.R()) { // Spigot: Add this.R() condition
                 for (int i = 0; i < list.size(); ++i) {
                     Entity entity = (Entity) list.get(i);
 

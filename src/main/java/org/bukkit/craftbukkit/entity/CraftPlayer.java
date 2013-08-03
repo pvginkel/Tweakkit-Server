@@ -1280,6 +1280,19 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     // Spigot start
     private final Player.Spigot spigot = new Player.Spigot()
     {
+
+        @Override
+        public boolean getCollidesWithEntities()
+        {
+            return getHandle().collidesWithEntities;
+        }
+
+        @Override
+        public void setCollidesWithEntities(boolean collides)
+        {
+            getHandle().collidesWithEntities = collides;
+            getHandle().k = collides; // First boolean of Entity
+        }
     };
 
     public Player.Spigot spigot()
