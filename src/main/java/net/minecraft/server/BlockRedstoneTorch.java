@@ -11,7 +11,7 @@ import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 public class BlockRedstoneTorch extends BlockTorch {
 
     private boolean isOn;
-    private static Map b = new HashMap();
+    private static Map b = new java.util.WeakHashMap(); // Spigot
 
     private boolean a(World world, int i, int j, int k, boolean flag) {
         if (!b.containsKey(world)) {
