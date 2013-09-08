@@ -189,12 +189,18 @@ public class TileEntityHopper extends TileEntity implements IHopper {
                 }
 
                 if (flag) {
-                    this.c(8);
+                    this.c(world.spigotConfig.hopperTransfer); // Spigot
                     this.update();
                     return true;
                 }
             }
 
+            // Spigot start
+            if ( !this.j() )
+            {
+                this.c( world.spigotConfig.hopperCheck );
+            }
+            // Spigot end
             return false;
         } else {
             return false;
@@ -246,7 +252,7 @@ public class TileEntityHopper extends TileEntity implements IHopper {
                     if (this.getItem(j) != null) {
                         ItemStack itemstack = this.getItem(j).cloneItemStack();
                         // CraftBukkit start - Call event when pushing items into other inventories
-                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(this.splitStack(j, 1));
+                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(this.splitStack(j, world.spigotConfig.hopperAmount)); // Spigot
 
                         Inventory destinationInventory;
                         // Have to special case large chests as they work oddly
@@ -260,11 +266,11 @@ public class TileEntityHopper extends TileEntity implements IHopper {
                         this.getWorld().getServer().getPluginManager().callEvent(event);
                         if (event.isCancelled()) {
                             this.setItem(j, itemstack);
-                            this.c(8); // Delay hopper checks
+                            this.c(world.spigotConfig.hopperTransfer); // Spigot
                             return false;
                         }
+                        int origCount = event.getItem().getAmount(); // Spigot
                         ItemStack itemstack1 = addItem(iinventory, CraftItemStack.asNMSCopy(event.getItem()), i);
-
                         if (itemstack1 == null || itemstack1.count == 0) {
                             if (event.getItem().equals(oitemstack)) {
                                 iinventory.update();
@@ -274,7 +280,7 @@ public class TileEntityHopper extends TileEntity implements IHopper {
                             // CraftBukkit end
                             return true;
                         }
-
+                        itemstack.count -= origCount - itemstack1.count; // Spigot
                         this.setItem(j, itemstack);
                     }
                 }
@@ -379,7 +385,7 @@ public class TileEntityHopper extends TileEntity implements IHopper {
         if (itemstack != null && canTakeItemFromInventory(iinventory, itemstack, i, j)) {
             ItemStack itemstack1 = itemstack.cloneItemStack();
             // CraftBukkit start - Call event on collection of items from inventories into the hopper
-            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.splitStack(i, 1));
+            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(iinventory.splitStack(i, ihopper.getWorld().spigotConfig.hopperAmount)); // Spigot
 
             Inventory sourceInventory;
             // Have to special case large chests as they work oddly
@@ -396,13 +402,14 @@ public class TileEntityHopper extends TileEntity implements IHopper {
                 iinventory.setItem(i, itemstack1);
 
                 if (ihopper instanceof TileEntityHopper) {
-                    ((TileEntityHopper) ihopper).c(8); // Delay hopper checks
+                    ((TileEntityHopper) ihopper).c(ihopper.getWorld().spigotConfig.hopperTransfer); // Spigot
                 } else if (ihopper instanceof EntityMinecartHopper) {
-                    ((EntityMinecartHopper) ihopper).l(4); // Delay hopper minecart checks
+                    ((EntityMinecartHopper) ihopper).l(ihopper.getWorld().spigotConfig.hopperTransfer / 2); // Spigot
                 }
 
                 return false;
             }
+            int origCount = event.getItem().getAmount(); // Spigot
             ItemStack itemstack2 = addItem(ihopper, CraftItemStack.asNMSCopy(event.getItem()), -1);
 
             if (itemstack2 == null || itemstack2.count == 0) {
@@ -415,6 +422,7 @@ public class TileEntityHopper extends TileEntity implements IHopper {
 
                 return true;
             }
+            itemstack1.count -= origCount - itemstack2.count; // Spigot
 
             iinventory.setItem(i, itemstack1);
         }
@@ -502,7 +510,7 @@ public class TileEntityHopper extends TileEntity implements IHopper {
 
             if (flag) {
                 if (iinventory instanceof TileEntityHopper) {
-                    ((TileEntityHopper) iinventory).c(8);
+                    ((TileEntityHopper) iinventory).c(((TileEntityHopper) iinventory).world.spigotConfig.hopperTransfer); // Spigot
                     iinventory.update();
                 }
 
