@@ -178,7 +178,15 @@ public abstract class StructureGenerator extends WorldGenBase {
 
     private void a(World world) {
         if (this.e == null) {
+            // Spigot Start
+            if ( world.spigotConfig.saveStructureInfo )
+            {
             this.e = (PersistentStructure) world.a(PersistentStructure.class, this.a());
+            } else
+            {
+                this.e = new PersistentStructure( this.a() );
+            }
+            // Spigot End
             if (this.e == null) {
                 this.e = new PersistentStructure(this.a());
                 world.a(this.a(), (PersistentBase) this.e);
