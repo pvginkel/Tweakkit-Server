@@ -106,6 +106,7 @@ public class PlayerConnection implements PacketPlayInListener {
     private float lastPitch = Float.MAX_VALUE;
     private float lastYaw = Float.MAX_VALUE;
     private boolean justTeleported = false;
+    private boolean hasMoved; // Spigot
 
     // For the PacketPlayOutBlockPlace hack :(
     Long lastPacket;
@@ -203,6 +204,18 @@ public class PlayerConnection implements PacketPlayInListener {
 
             // CraftBukkit start - fire PlayerMoveEvent
             Player player = this.getPlayer();
+            // Spigot Start
+            if ( !hasMoved )
+            {
+                Location curPos = player.getLocation();
+                lastPosX = curPos.getX();
+                lastPosY = curPos.getY();
+                lastPosZ = curPos.getZ();
+                lastYaw = curPos.getYaw();
+                lastPitch = curPos.getPitch();
+                hasMoved = true;
+            }
+            // Spigot End
             Location from = new Location(player.getWorld(), lastPosX, lastPosY, lastPosZ, lastYaw, lastPitch); // Get the Players previous Event location.
             Location to = player.getLocation().clone(); // Start off the To location as the Players current location.
 
@@ -231,7 +244,7 @@ public class PlayerConnection implements PacketPlayInListener {
                 this.lastPitch = to.getPitch();
 
                 // Skip the first time we do this
-                if (from.getX() != Double.MAX_VALUE) {
+                if (true) { // Spigot - don't skip any move events
                     PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
                     this.server.getPluginManager().callEvent(event);
 
