@@ -86,7 +86,13 @@ public class BlockBrewingStand extends BlockContainer {
                         entityitem.motX = (double) ((float) this.a.nextGaussian() * f3);
                         entityitem.motY = (double) ((float) this.a.nextGaussian() * f3 + 0.2F);
                         entityitem.motZ = (double) ((float) this.a.nextGaussian() * f3);
-                        world.addEntity(entityitem);
+                        // Spigot Start
+                        if ( itemstack.hasTag() )
+                        {
+                            entityitem.getItemStack().setTag( (NBTTagCompound) itemstack.getTag().clone() );
+                        }
+                        // Spigot End
+                        world.addEntity( entityitem );
                     }
                 }
             }
