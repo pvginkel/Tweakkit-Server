@@ -6,6 +6,7 @@ import javax.crypto.SecretKey;
 
 import net.minecraft.util.com.google.common.collect.Queues;
 import net.minecraft.util.com.google.common.util.concurrent.ThreadFactoryBuilder;
+import net.minecraft.util.com.mojang.authlib.properties.Property;
 import net.minecraft.util.io.netty.channel.Channel;
 import net.minecraft.util.io.netty.channel.ChannelFutureListener;
 import net.minecraft.util.io.netty.channel.ChannelHandlerContext;
@@ -37,7 +38,11 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private final Queue k = Queues.newConcurrentLinkedQueue();
     private final Queue l = Queues.newConcurrentLinkedQueue();
     private Channel m;
-    private SocketAddress n;
+    // Spigot Start
+    public SocketAddress n;
+    public java.util.UUID spoofedUUID;
+    public Property[] spoofedProfile;
+    // Spigot End
     private PacketListener o;
     private EnumProtocol p;
     private IChatBaseComponent q;
@@ -207,4 +212,11 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     static Channel a(NetworkManager networkmanager) {
         return networkmanager.m;
     }
+
+    // Spigot Start
+    public SocketAddress getRawAddress()
+    {
+        return this.m.remoteAddress();
+    }
+    // Spigot End
 }
