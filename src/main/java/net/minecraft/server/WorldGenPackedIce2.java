@@ -41,13 +41,13 @@ public class WorldGenPackedIce2 extends WorldGenerator {
                             Block block = world.getType(i + l1, j + j1, k + i2);
 
                             if (block.getMaterial() == Material.AIR || block == Blocks.DIRT || block == Blocks.SNOW_BLOCK || block == Blocks.ICE) {
-                                this.setType(world, i + l1, j + j1, k + i2, Blocks.PACKED_ICE);
+                                world.setTypeUpdate(i + l1, j + j1, k + i2, Blocks.PACKED_ICE); // Spigot
                             }
 
                             if (j1 != 0 && k1 > 1) {
                                 block = world.getType(i + l1, j - j1, k + i2);
                                 if (block.getMaterial() == Material.AIR || block == Blocks.DIRT || block == Blocks.SNOW_BLOCK || block == Blocks.ICE) {
-                                    this.setType(world, i + l1, j - j1, k + i2, Blocks.PACKED_ICE);
+                                    world.setTypeUpdate(i + l1, j - j1, k + i2, Blocks.PACKED_ICE); // Spigot
                                 }
                             }
                         }
@@ -78,7 +78,7 @@ public class WorldGenPackedIce2 extends WorldGenerator {
                             Block block1 = world.getType(i + j2, l1, k + k1);
 
                             if (block1.getMaterial() == Material.AIR || block1 == Blocks.DIRT || block1 == Blocks.SNOW_BLOCK || block1 == Blocks.ICE || block1 == Blocks.PACKED_ICE) {
-                                this.setType(world, i + j2, l1, k + k1, Blocks.PACKED_ICE);
+                                world.setTypeUpdate(i + j2, l1, k + k1, Blocks.PACKED_ICE); // Spigot
                                 --l1;
                                 --k2;
                                 if (k2 <= 0) {
