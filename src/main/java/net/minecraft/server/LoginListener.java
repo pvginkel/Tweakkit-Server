@@ -62,8 +62,14 @@ public class LoginListener implements PacketLoginInListener {
     // Spigot start
     public void initUUID()
     {
-        String uuid = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + this.i.getName() ).getBytes( Charsets.UTF_8 ) ).toString().replaceAll( "-", "" );
-
+        String uuid;
+        if ( networkManager.spoofedUUID != null )
+        {
+            uuid = networkManager.spoofedUUID;
+        } else
+        {
+            uuid = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + this.i.getName() ).getBytes( Charsets.UTF_8 ) ).toString().replaceAll("-", "");
+        }
         this.i = new GameProfile( uuid, this.i.getName() );
     }
     // Spigot end

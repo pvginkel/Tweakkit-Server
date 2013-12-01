@@ -36,7 +36,8 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private final Queue k = Queues.newConcurrentLinkedQueue();
     private final Queue l = Queues.newConcurrentLinkedQueue();
     private Channel m;
-    private SocketAddress n;
+    public SocketAddress n; // Spigot
+    public String spoofedUUID; // Spigot
     private PacketListener o;
     private EnumProtocol p;
     private IChatBaseComponent q;
@@ -196,4 +197,11 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     static Channel a(NetworkManager networkmanager) {
         return networkmanager.m;
     }
+
+    // Spigot Start
+    public SocketAddress getRawAddress()
+    {
+        return this.m.remoteAddress();
+    }
+    // Spigot End
 }

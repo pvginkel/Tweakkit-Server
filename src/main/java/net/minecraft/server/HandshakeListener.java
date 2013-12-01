@@ -73,6 +73,22 @@ public class HandshakeListener implements PacketHandshakingInListener {
                 this.b.close(chatcomponenttext);
             } else {
                 this.b.a((PacketListener) (new LoginListener(this.a, this.b)));
+                // Spigot Start
+                if (org.spigotmc.SpigotConfig.bungee) {
+                    String[] split = packethandshakinginsetprotocol.b.split("\00");
+                    if ( split.length == 3 ) {
+                        packethandshakinginsetprotocol.b = split[0];
+                        b.n = new java.net.InetSocketAddress(split[1], ((java.net.InetSocketAddress) b.getSocketAddress()).getPort());
+                        b.spoofedUUID = split[2];
+                    } else
+                    {
+                        chatcomponenttext = new ChatComponentText("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
+                        this.b.handle(new PacketLoginOutDisconnect(chatcomponenttext), new GenericFutureListener[0]);
+                        this.b.close(chatcomponenttext);
+                        return;
+                    }
+                }
+                // Spigot End
                 ((LoginListener) this.b.getPacketListener()).hostname = packethandshakinginsetprotocol.b + ":" + packethandshakinginsetprotocol.c; // CraftBukkit - set hostname
             }
             break;
