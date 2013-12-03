@@ -90,6 +90,7 @@ public class BlockFlowerPot extends BlockContainer {
 
         if (tileentityflowerpot != null && tileentityflowerpot.a() != null) {
             this.a(world, i, j, k, new ItemStack(tileentityflowerpot.a(), 1, tileentityflowerpot.b()));
+            tileentityflowerpot.a( null, 0 ); // Spigot
         }
 
         super.remove(world, i, j, k, block, l);
