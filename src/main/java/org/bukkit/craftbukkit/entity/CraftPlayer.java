@@ -453,9 +453,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             return false;
         }
 
-        if (entity.vehicle != null || entity.passenger != null) {
-            return false;
-        }
+        // Spigot Start
+        // if (entity.vehicle != null || entity.passenger != null) {
+        // return false;
+        // }
+        // Spigot End
 
         // From = Players current Location
         Location from = this.getLocation();
@@ -469,6 +471,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (event.isCancelled()) {
             return false;
         }
+        
+        // Spigot Start
+        eject();
+        leaveVehicle();
+        // Spigot End
 
         // Update the From Location
         from = event.getFrom();
