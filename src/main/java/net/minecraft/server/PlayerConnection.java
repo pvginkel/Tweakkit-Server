@@ -1584,6 +1584,7 @@ public class PlayerConnection implements PacketPlayInListener {
 
             for (j = 0; j < 4; ++j) {
                 boolean flag = true;
+                packetplayinupdatesign.f()[j] = packetplayinupdatesign.f()[j].replaceAll( "\uF700", "" ).replaceAll( "\uF701", "" ); // Spigot - Mac OSX sends weird chars
 
                 if (packetplayinupdatesign.f()[j].length() > 15) {
                     flag = false;
