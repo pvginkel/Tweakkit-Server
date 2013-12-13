@@ -54,7 +54,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     private final List n = new ArrayList();
     private final ICommandHandler o;
     public final MethodProfiler methodProfiler = new MethodProfiler();
-    private final ServerConnection p;
+    private ServerConnection p; // Spigot
     private final ServerPing q = new ServerPing();
     private final Random r = new Random();
     private String serverIp;
@@ -113,7 +113,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         j = this;
         this.d = proxy;
         // this.universe = file1; // CraftBukkit
-        this.p = new ServerConnection(this);
+        // this.p = new ServerConnection(this); // Spigot
         this.o = new CommandDispatcher();
         // this.convertable = new WorldLoaderServer(file1); // CraftBukkit - moved to DedicatedServer.init
         this.T = new YggdrasilAuthenticationService(proxy, UUID.randomUUID().toString());
@@ -1260,7 +1260,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     }
     // Spigot End
     public ServerConnection ai() {
-        return this.p;
+        return ( this.p ) == null ? this.p = new ServerConnection( this ) : this.p; // Spigot
     }
 
     public boolean ak() {
