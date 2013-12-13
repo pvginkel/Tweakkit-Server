@@ -245,4 +245,11 @@ public class SpigotWorldConfig
 
         antiXrayInstance = new AntiXray( this );
     }
+
+    public boolean zombieAggressiveTowardsVillager;
+    private void zombieAggressiveTowardsVillager()
+    {
+        zombieAggressiveTowardsVillager = getBoolean( "zombie-aggressive-towards-villager", true );
+        log( "Zombie Aggressive Towards Villager: " + zombieAggressiveTowardsVillager );
+    }
 }
