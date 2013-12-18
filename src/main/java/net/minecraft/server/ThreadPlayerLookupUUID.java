@@ -22,48 +22,22 @@ class ThreadPlayerLookupUUID extends Thread {
 
     public void run() {
         try {
+            // Spigot Start
+            if ( !LoginListener.b( this.a ).getOnlineMode() )
+            {
+                a.initUUID();
+                fireLoginEvents();
+                LoginListener.e().info( "UUID of player " + LoginListener.d( this.a ).getName() + " is " + LoginListener.d( this.a ).getId() );
+                LoginListener.a( this.a, EnumProtocolState.READY_TO_ACCEPT );
+                return;
+            }
+            // Spigot End
             String s = (new BigInteger(MinecraftEncryption.a(LoginListener.a(this.a), LoginListener.b(this.a).J().getPublic(), LoginListener.c(this.a)))).toString(16);
-
             LoginListener.a(this.a, LoginListener.b(this.a).at().hasJoinedServer(new GameProfile((String) null, LoginListener.d(this.a).getName()), s));
             if (LoginListener.d(this.a) != null) {
-                // CraftBukkit start - fire PlayerPreLoginEvent
-                if (!this.a.networkManager.isConnected()) {
-                    return;
-                }
-
-                String playerName = LoginListener.d(this.a).getName();
-                java.net.InetAddress address = ((java.net.InetSocketAddress) a.networkManager.getSocketAddress()).getAddress();
-                java.util.UUID uniqueId = UtilUUID.b(LoginListener.d(this.a).getId());
-                final org.bukkit.craftbukkit.CraftServer server = LoginListener.b(this.a).server;
-
-                AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, uniqueId);
-                server.getPluginManager().callEvent(asyncEvent);
-
-                if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length != 0) {
-                    final PlayerPreLoginEvent event = new PlayerPreLoginEvent(playerName, address, uniqueId);
-                    if (asyncEvent.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
-                        event.disallow(asyncEvent.getResult(), asyncEvent.getKickMessage());
-                    }
-                    Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
-                        @Override
-                        protected PlayerPreLoginEvent.Result evaluate() {
-                            server.getPluginManager().callEvent(event);
-                            return event.getResult();
-                        }};
-
-                    LoginListener.b(this.a).processQueue.add(waitable);
-                    if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
-                        this.a.disconnect(event.getKickMessage());
-                        return;
-                    }
-                } else {
-                    if (asyncEvent.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
-                        this.a.disconnect(asyncEvent.getKickMessage());
-                        return;
-                    }
-                }
-                // CraftBukkit end
-
+                // Spigot Start
+                fireLoginEvents();
+                // Spigot End
                 LoginListener.e().info("UUID of player " + LoginListener.d(this.a).getName() + " is " + LoginListener.d(this.a).getId());
                 LoginListener.a(this.a, EnumProtocolState.READY_TO_ACCEPT);
             } else {
@@ -79,5 +53,46 @@ class ThreadPlayerLookupUUID extends Thread {
             LoginListener.b(this.a).server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + LoginListener.d(this.a).getName(), exception);
             // CraftBukkit end
         }
+    }
+
+    private void fireLoginEvents() throws Exception
+    {
+        // CraftBukkit start - fire PlayerPreLoginEvent
+        if (!this.a.networkManager.isConnected()) {
+            return;
+        }
+
+        String playerName = LoginListener.d(this.a).getName();
+        java.net.InetAddress address = ((java.net.InetSocketAddress) a.networkManager.getSocketAddress()).getAddress();
+        java.util.UUID uniqueId = UtilUUID.b(LoginListener.d(this.a).getId());
+        final org.bukkit.craftbukkit.CraftServer server = LoginListener.b(this.a).server;
+
+        AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, uniqueId);
+        server.getPluginManager().callEvent(asyncEvent);
+
+        if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length != 0) {
+            final PlayerPreLoginEvent event = new PlayerPreLoginEvent(playerName, address, uniqueId);
+            if (asyncEvent.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
+                event.disallow(asyncEvent.getResult(), asyncEvent.getKickMessage());
+            }
+            Waitable<PlayerPreLoginEvent.Result> waitable = new Waitable<PlayerPreLoginEvent.Result>() {
+                @Override
+                protected PlayerPreLoginEvent.Result evaluate() {
+                    server.getPluginManager().callEvent(event);
+                    return event.getResult();
+                }};
+
+            LoginListener.b(this.a).processQueue.add(waitable);
+            if (waitable.get() != PlayerPreLoginEvent.Result.ALLOWED) {
+                this.a.disconnect(event.getKickMessage());
+                return;
+            }
+        } else {
+            if (asyncEvent.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+                this.a.disconnect(asyncEvent.getKickMessage());
+                return;
+            }
+        }
+        // CraftBukkit end
     }
 }
