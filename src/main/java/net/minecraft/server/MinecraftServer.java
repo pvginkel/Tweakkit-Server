@@ -469,6 +469,12 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
             }
         } catch (Throwable throwable) {
             h.error("Encountered an unexpected exception", throwable);
+            // Spigot Start
+            if ( throwable.getCause() != null )
+            {
+                h.error( "\tCause of unexpected exception was", throwable.getCause() );
+            }
+            // Spigot End
             CrashReport crashreport = null;
 
             if (throwable instanceof ReportedException) {
