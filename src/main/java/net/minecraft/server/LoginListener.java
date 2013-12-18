@@ -59,10 +59,23 @@ public class LoginListener implements PacketLoginInListener {
         }
     }
 
+    // Spigot start
+    public void initUUID()
+    {
+        UUID uuid = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + this.i.getName() ).getBytes( Charsets.UTF_8 ) );
+
+        this.i = new GameProfile( uuid, this.i.getName() );
+    }
+    // Spigot end
+
     public void c() {
+        // Spigot start - Moved to initUUID
+        /*
         if (!this.i.isComplete()) {
             this.i = this.a(this.i);
         }
+        */
+        // Spigot end
 
         // CraftBukkit start - fire PlayerLoginEvent
         EntityPlayer s = this.server.getPlayerList().attemptLogin(this, this.i, this.hostname);
@@ -97,7 +110,7 @@ public class LoginListener implements PacketLoginInListener {
             this.g = EnumProtocolState.KEY;
             this.networkManager.handle(new PacketLoginOutEncryptionBegin(this.j, this.server.K().getPublic(), this.e), new GenericFutureListener[0]);
         } else {
-            this.g = EnumProtocolState.READY_TO_ACCEPT;
+            (new ThreadPlayerLookupUUID(this, "User Authenticator #" + b.incrementAndGet())).start(); // Spigot
         }
     }
 
