@@ -1320,6 +1320,49 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
                 server.getServer().getPlayerList().moveToWorld( getHandle(), 0, false );
             }
         }
+
+        @Override
+        public void playEffect( Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius )
+        {
+            Validate.notNull( location, "Location cannot be null" );
+            Validate.notNull( effect, "Effect cannot be null" );
+            Validate.notNull( location.getWorld(), "World cannot be null" );
+            Packet packet;
+            if ( effect.getType() != Effect.Type.PARTICLE )
+            {
+                int packetData = effect.getId();
+                packet = new PacketPlayOutWorldEvent( packetData, location.getBlockX(), location.getBlockY(), location.getBlockZ(), id, false );
+            } else
+            {
+                StringBuilder particleFullName = new StringBuilder();
+                particleFullName.append( effect.getName() );
+                if ( effect.getData() != null && ( effect.getData().equals( Material.class ) || effect.getData().equals( org.bukkit.material.MaterialData.class ) ) )
+                {
+                    particleFullName.append( '_' ).append( id );
+                }
+                if ( effect.getData() != null && effect.getData().equals( org.bukkit.material.MaterialData.class ) )
+                {
+                    particleFullName.append( '_' ).append( data );
+                }
+                packet = new PacketPlayOutWorldParticles( particleFullName.toString(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, particleCount );
+            }
+            int distance;
+            radius *= radius;
+            if ( getHandle().playerConnection == null )
+            {
+                return;
+            }
+            if ( !location.getWorld().equals( getWorld() ) )
+            {
+                return;
+            }
+
+            distance = (int) getLocation().distanceSquared( location );
+            if ( distance <= radius )
+            {
+                getHandle().playerConnection.sendPacket( packet );
+            }
+        }
     };
 
     public Player.Spigot spigot()
