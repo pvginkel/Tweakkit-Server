@@ -127,6 +127,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             this.a(MinecraftEncryption.b());
             i.info("Starting Minecraft server on " + (this.getServerIp().length() == 0 ? "*" : this.getServerIp()) + ":" + this.L());
 
+        if (!org.spigotmc.SpigotConfig.lateBind) {
             try {
                 this.ai().a(inetaddress, this.L());
             } catch (Throwable ioexception) { // CraftBukkit - IOException -> Throwable
@@ -135,6 +136,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
                 i.warn("Perhaps a server is already running on that port?");
                 return false;
             }
+        }
 
             // Spigot Start - Move DedicatedPlayerList up and bring plugin loading from CraftServer to here
             // this.a((PlayerList) (new DedicatedPlayerList(this))); // CraftBukkit
@@ -224,6 +226,16 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
                 }
                 // CraftBukkit end
 
+        if (org.spigotmc.SpigotConfig.lateBind) {
+            try {
+                this.ai().a(inetaddress, this.L());
+            } catch (Throwable ioexception) { // CraftBukkit - IOException -> Throwable
+                i.warn("**** FAILED TO BIND TO PORT!");
+                i.warn("The exception was: {}", new Object[] { ioexception.toString()});
+                i.warn("Perhaps a server is already running on that port?");
+                return false;
+            }
+        }
                 return true;
             }
         }
