@@ -638,7 +638,9 @@ public class PlayerConnection implements PacketPlayInListener {
                 return;
             }
 
-            this.player.playerInteractManager.interact(this.player, worldserver, itemstack, i, j, k, l, packetplayinblockplace.h(), packetplayinblockplace.i(), packetplayinblockplace.j());
+            if (!this.player.playerInteractManager.interact(this.player, worldserver, itemstack, i, j, k, l, packetplayinblockplace.h(), packetplayinblockplace.i(), packetplayinblockplace.j())) {
+                always = true; // force Packet103SetSlot to be sent to client to update ItemStack count
+            }
             // CraftBukkit end
 
             flag = true;
