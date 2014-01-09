@@ -11,6 +11,15 @@ public class BlockAnvil extends BlockFalling {
         this.a(CreativeModeTab.c);
     }
 
+    // Spigot start
+    @Override
+    public AxisAlignedBB a( World world, int i, int j, int k )
+    {
+        updateShape( world, i, j, k );
+        return super.a( world, i, j, k );
+    }
+    // Spigot end
+
     public boolean d() {
         return false;
     }
