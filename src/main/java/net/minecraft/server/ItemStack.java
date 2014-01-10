@@ -228,7 +228,13 @@ public final class ItemStack {
     }
 
     public boolean g() {
-        return this.item.getMaxDurability() <= 0 ? false : !this.hasTag() || !this.getTag().getBoolean("Unbreakable");
+        // Spigot Start
+        if ( this.item.getMaxDurability() <= 0 )
+        {
+            return false;
+        }
+        return ( !hasTag() ) || ( !getTag().getBoolean( "Unbreakable" ) );
+        // Spigot End
     }
 
     public boolean usesData() {
