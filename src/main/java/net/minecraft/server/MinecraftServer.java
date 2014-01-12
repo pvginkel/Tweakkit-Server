@@ -572,7 +572,16 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         if ((this.autosavePeriod > 0) && ((this.ticks % this.autosavePeriod) == 0)) { // CraftBukkit
             this.methodProfiler.a("save");
             this.t.savePlayers();
-            this.saveChunks(true);
+            // Spigot Start
+            // We replace this with saving each individual world as this.saveChunks(...) is broken,
+            // and causes the main thread to sleep for random amounts of time depending on chunk activity
+            server.playerCommandState = true;
+            for (World world : worlds) {
+                world.getWorld().save();
+            }
+            server.playerCommandState = false;
+            // this.saveChunks(true);
+            // Spigot End
             this.methodProfiler.b();
         }
 
