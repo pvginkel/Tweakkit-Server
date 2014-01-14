@@ -1131,23 +1131,24 @@ public abstract class World implements IBlockAccess {
             this.players.remove(entity);
             this.everyoneSleeping();
         }
-
-        int i = entity.ah;
-        int j = entity.aj;
-
-        if (entity.ag && this.isChunkLoaded(i, j)) {
-            this.getChunkAt(i, j).b(entity);
-        }
-
-        // CraftBukkit start - Decrement loop variable field if we've already ticked this entity
-        int index = this.entityList.indexOf(entity);
-        if (index != -1) {
-            if (index <= this.tickPosition) {
-                this.tickPosition--;
+        // Spigot start
+        if (!guardEntityList) { // It will get removed after the tick if we are ticking
+            int i = entity.ah;
+            int j = entity.aj;
+            if (entity.ag && this.isChunkLoaded(i, j)) {
+                this.getChunkAt(i, j).b(entity);
             }
-            this.entityList.remove(index);
+            // CraftBukkit start - Decrement loop variable field if we've already ticked this entity
+            int index = this.entityList.indexOf(entity);
+            if (index != -1) {
+                if (index <= this.tickPosition) {
+                    this.tickPosition--;
+                }
+                this.entityList.remove(index);
+            }
+            // CraftBukkit end
         }
-        // CraftBukkit end
+        // Spigot end
 
         this.b(entity);
     }
