@@ -143,7 +143,7 @@ public class Chunk {
                         }
 
                         this.sections[l1].setTypeId(l, j1 & 15, i1, block);
-                        this.sections[l1].setData(l, j1 & 15, i1, abyte[k1]);
+                        this.sections[l1].setData(l, j1 & 15, i1, checkData( block, abyte[k1] ) );
                     }
                 }
             }
@@ -426,6 +426,17 @@ public class Chunk {
         }
     }
 
+    // Spigot start - prevent invalid data values
+    public static int checkData( Block block, int data )
+    {
+        if (block == Blocks.DOUBLE_PLANT )
+        {
+            return data < 6 || data >= 8 ? data : 0;
+        }
+        return data;
+    }
+    // Spigot end
+
     public boolean a(int i, int j, int k, Block block, int l) {
         int i1 = k << 4 | i;
 
@@ -480,7 +491,7 @@ public class Chunk {
             if (chunksection.getTypeId(i, j & 15, k) != block) {
                 return false;
             } else {
-                chunksection.setData(i, j & 15, k, l);
+                chunksection.setData(i, j & 15, k, checkData( block, l ) );
                 if (flag) {
                     this.initLighting();
                 } else {
@@ -545,8 +556,9 @@ public class Chunk {
                 return false;
             } else {
                 this.n = true;
-                chunksection.setData(i, j & 15, k, l);
-                if (chunksection.getTypeId(i, j & 15, k) instanceof IContainer) {
+                Block block = chunksection.getTypeId( i, j & 15, k );
+                chunksection.setData(i, j & 15, k, checkData( block, l ) );
+                if (block instanceof IContainer) {
                     TileEntity tileentity = this.e(i, j, k);
 
                     if (tileentity != null) {
