@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 public final class CraftChatMessage {
     private static class StringMessage {
         private static final Map<Character, EnumChatFormat> formatMap;
-        private static final Pattern INCREMENTAL_PATTERN = Pattern.compile("(" + String.valueOf(org.bukkit.ChatColor.COLOR_CHAR) + "[0-9a-fk-or])|(\\n)|(?:(https?://[^ ][^ ]*?)(?=[\\.\\?!,;:]?(?:[ \\n]|$)))", Pattern.CASE_INSENSITIVE);
+        private static final Pattern INCREMENTAL_PATTERN = Pattern.compile("(" + String.valueOf(org.bukkit.ChatColor.COLOR_CHAR) + "[0-9a-fk-or])|(\\n)|((?:(?:https?)://)?(?:[-\\w_\\.]{2,}\\.[a-z]{2,4}.*?(?=[\\.\\?!,;:]?(?:[" + String.valueOf(org.bukkit.ChatColor.COLOR_CHAR) + " \\n]|$))))", Pattern.CASE_INSENSITIVE);
 
         static {
             Builder<Character, EnumChatFormat> builder = ImmutableMap.builder();
@@ -85,6 +85,9 @@ public final class CraftChatMessage {
                     currentChatComponent = null;
                     break;
                 case 3:
+                    if ( !( match.startsWith( "http://" ) || match.startsWith( "https://" ) ) ) {
+                        match = "http://" + match;
+                    }
                     modifier.setChatClickable(new ChatClickable(EnumClickAction.OPEN_URL, match));
                     appendNewComponent(matcher.end(groupId));
                     modifier.setChatClickable((ChatClickable) null);
@@ -96,7 +99,7 @@ public final class CraftChatMessage {
                 appendNewComponent(message.length());
             }
 
-            output = list.toArray(new IChatBaseComponent[0]);
+            output = list.toArray(new IChatBaseComponent[list.size()]);
         }
 
         private void appendNewComponent(int index) {
