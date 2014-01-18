@@ -199,6 +199,8 @@ public abstract class EntityFireball extends Entity {
         nbttagcompound.setByte("inGround", (byte) (this.i ? 1 : 0));
         // CraftBukkit - Fix direction being mismapped to invalid variables
         nbttagcompound.set("power", this.a(new double[] { this.dirX, this.dirY, this.dirZ}));
+        // Spigot - Support vanilla's direction tag
+        nbttagcompound.set("direction", this.a(new double[] { this.motX, this.motY, this.motZ}));
     }
 
     public void a(NBTTagCompound nbttagcompound) {
@@ -215,6 +217,13 @@ public abstract class EntityFireball extends Entity {
             this.dirY = nbttaglist.d(1);
             this.dirZ = nbttaglist.d(2);
             // CraftBukkit end
+        } else if (nbttagcompound.hasKeyOfType("direction", 9)) { // Spigot - Support vanilla's direction tag
+            NBTTagList nbttaglist = nbttagcompound.getList("direction", 6);
+
+            this.motX = nbttaglist.d(0);
+            this.motY = nbttaglist.d(1);
+            this.motZ = nbttaglist.d(2);
+
         } else {
             this.die();
         }
