@@ -15,7 +15,7 @@ public class BlockPortal extends BlockHalfTransparent {
 
     public void a(World world, int i, int j, int k, Random random) {
         super.a(world, i, j, k, random);
-        if (world.worldProvider.d() && world.getGameRules().getBoolean("doMobSpawning") && random.nextInt(2000) < world.difficulty.a()) {
+        if (world.spigotConfig.enableZombiePigmenPortalSpawns && world.worldProvider.d() && world.getGameRules().getBoolean("doMobSpawning") && random.nextInt(2000) < world.difficulty.a()) { // Spigot
             int l;
 
             for (l = j; !World.a((IBlockAccess) world, i, l, k) && l > 0; --l) {
