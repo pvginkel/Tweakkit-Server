@@ -22,6 +22,7 @@ public class NBTTagByteArray extends NBTBase {
 
     void load(DataInput datainput, int i) throws IOException {
         int j = datainput.readInt();
+        com.google.common.base.Preconditions.checkArgument( j < 1 << 24);
 
         this.data = new byte[j];
         datainput.readFully(this.data);
