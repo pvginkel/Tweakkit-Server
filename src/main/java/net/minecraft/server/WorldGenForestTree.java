@@ -124,7 +124,12 @@ public class WorldGenForestTree extends WorldGenTreeAbstract {
                                 int k3;
 
                                 for (k3 = 0; k3 < j3; ++k3) {
-                                    this.setTypeAndData(world, i + l2, k2 - k3 - 1, k + i3, Blocks.LOG2, 1);
+                                    Block block = world.getType(i + l2, k2 - k3 - 1, k + i3);
+
+                                    if (block.getMaterial() == Material.AIR || block.getMaterial() == Material.LEAVES)
+                                    {
+                                        this.setTypeAndData(world, i + l2, k2 - k3 - 1, k + i3, Blocks.LOG2, 1);
+                                    }
                                 }
 
                                 int l3;
