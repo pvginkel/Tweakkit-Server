@@ -266,4 +266,11 @@ public class SpigotWorldConfig
         enableZombiePigmenPortalSpawns = getBoolean( "enable-zombie-pigmen-portal-spawns", true );
         log( "Allow Zombie Pigmen to spawn from portal blocks: " + enableZombiePigmenPortalSpawns );
     }
+
+    public int maxBulkChunk;
+    private void bulkChunkCount()
+    {
+        maxBulkChunk = getInt( "max-bulk-chunks", 5 );
+        log( "Sending up to " + maxBulkChunk + " chunks per packet" );
+    }
 }

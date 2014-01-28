@@ -214,7 +214,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
 
             Chunk chunk;
 
-            while (iterator1.hasNext() && arraylist.size() < PacketPlayOutMapChunkBulk.c()) {
+            while (iterator1.hasNext() && arraylist.size() < this.world.spigotConfig.maxBulkChunk) { // Spigot
                 ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair) iterator1.next();
 
                 if (chunkcoordintpair != null) {
