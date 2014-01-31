@@ -1597,7 +1597,9 @@ public abstract class EntityLiving extends Entity {
         List list = this.world.getEntities(this, this.boundingBox.grow(0.20000000298023224D, 0.0D, 0.20000000298023224D));
 
         if (this.R() && list != null && !list.isEmpty()) { // Spigot: Add this.R() condition
+            numCollisions -= world.spigotConfig.maxCollisionsPerEntity; // Spigot
             for (int i = 0; i < list.size(); ++i) {
+                if (numCollisions > world.spigotConfig.maxCollisionsPerEntity) { break; } // Spigot
                 Entity entity = (Entity) list.get(i);
 
                 // TODO better check now?
@@ -1608,9 +1610,12 @@ public abstract class EntityLiving extends Entity {
                 // CraftBukkit end
 
                 if (entity.S()) {
+                    entity.numCollisions++; // Spigot
+                    numCollisions++; // Spigot
                     this.o(entity);
                 }
             }
+            numCollisions = 0; // Spigot
         }
     }
 

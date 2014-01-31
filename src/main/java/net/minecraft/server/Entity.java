@@ -1012,6 +1012,7 @@ public abstract class Entity {
 
     public void b_(EntityHuman entityhuman) {}
 
+    int numCollisions = 0; // Spigot
     public void collide(Entity entity) {
         if (entity.passenger != this && entity.vehicle != this) {
             double d0 = entity.locX - this.locX;
