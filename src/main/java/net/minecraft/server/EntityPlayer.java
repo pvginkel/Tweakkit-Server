@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 public class EntityPlayer extends EntityHuman implements ICrafting {
 
     private static final Logger bL = LogManager.getLogger();
-    private String locale = "en_US";
+    public String locale = "en_US"; // Spigot
     public PlayerConnection playerConnection;
     public final MinecraftServer server;
     public final PlayerInteractManager playerInteractManager;

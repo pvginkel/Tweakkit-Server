@@ -1363,6 +1363,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
                 getHandle().playerConnection.sendPacket( packet );
             }
         }
+
+        @Override
+        public String getLocale()
+        {
+           return getHandle().locale;
+        }
     };
 
     public Player.Spigot spigot()
