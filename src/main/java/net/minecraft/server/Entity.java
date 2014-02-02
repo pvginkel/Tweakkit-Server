@@ -119,6 +119,7 @@ public abstract class Entity {
     public final byte activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
     public final boolean defaultActivationState;
     public long activatedTick = 0;
+    public boolean fromMobSpawner;
     public void inactiveTick() { }
     // Spigot end
 
