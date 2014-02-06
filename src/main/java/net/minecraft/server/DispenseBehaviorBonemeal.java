@@ -21,7 +21,7 @@ final class DispenseBehaviorBonemeal extends DispenseBehaviorItem {
 
             // CraftBukkit start
             org.bukkit.block.Block block = world.getWorld().getBlockAt(isourceblock.getBlockX(), isourceblock.getBlockY(), isourceblock.getBlockZ());
-            CraftItemStack craftItem = CraftItemStack.asNewCraftStack(itemstack.getItem());
+            CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemstack);
 
             BlockDispenseEvent event = new BlockDispenseEvent(block, craftItem.clone(), new org.bukkit.util.Vector(0, 0, 0));
             if (!BlockDispenser.eventFired) {
