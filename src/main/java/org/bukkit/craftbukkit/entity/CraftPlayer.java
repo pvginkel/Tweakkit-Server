@@ -1364,6 +1364,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         {
            return getHandle().locale;
         }
+
+        @Override
+        public Set<Player> getHiddenPlayers()
+        {
+            return java.util.Collections.unmodifiableSet( new HashSet<Player>( hiddenPlayers.values() ) );
+        }
     };
 
     public Player.Spigot spigot()
