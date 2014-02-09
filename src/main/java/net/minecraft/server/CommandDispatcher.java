@@ -83,7 +83,7 @@ public class CommandDispatcher extends CommandHandler implements ICommandDispatc
             }
         }
 
-        if (icommandlistener != MinecraftServer.getServer()) {
+        if (icommandlistener != MinecraftServer.getServer() && !org.spigotmc.SpigotConfig.silentCommandBlocks) { // Spigot
             MinecraftServer.getServer().sendMessage(chatmessage);
         }
 

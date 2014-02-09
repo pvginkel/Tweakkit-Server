@@ -272,4 +272,10 @@ public class SpigotConfig
                 "/skill"
         } ) );
     }
+
+    public static boolean silentCommandBlocks;
+    private static void silentCommandBlocks()
+    {
+        silentCommandBlocks = getBoolean( "commands.silent-commandblock-console", false );
+    }
 }
