@@ -295,4 +295,10 @@ public class SpigotConfig
     {
         silentCommandBlocks = getBoolean( "commands.silent-commandblock-console", false );
     }
+
+    public static boolean filterCreativeItems;
+    private static void filterCreativeItems()
+    {
+        filterCreativeItems = getBoolean( "settings.filter-creative-items", true );
+    }
 }
