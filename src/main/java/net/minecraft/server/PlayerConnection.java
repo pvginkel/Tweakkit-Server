@@ -1887,7 +1887,7 @@ public class PlayerConnection implements PacketPlayInListener {
     }
 
     // CraftBukkit start - Add "isDisconnected" method
-    public final boolean isDisconnected() {
+    public boolean isDisconnected() {
         return !this.player.joining && !NetworkManager.a(this.networkManager).config().isAutoRead();
     }
     // CraftBukkit end
