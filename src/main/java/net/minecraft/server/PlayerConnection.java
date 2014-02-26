@@ -791,7 +791,7 @@ public class PlayerConnection implements PacketPlayInListener {
             this.player.v();
             String s = packetplayinchat.c();
 
-            s = StringUtils.normalizeSpace(s);
+            // s = StringUtils.normalizeSpace(s); Spigot - Moved to PacketPlayInChat
 
             for (int i = 0; i < s.length(); ++i) {
                 if (!SharedConstants.isAllowedChatCharacter(s.charAt(i))) {
