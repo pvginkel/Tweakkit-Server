@@ -214,7 +214,7 @@ public class Metrics {
             }
 
             // Begin hitting the server with glorious data
-            task = new Timer("Spigot Metrics Thread", true);
+            task = new Timer("Tweakkit Metrics Thread", true);
 
             task.scheduleAtFixedRate(new TimerTask() {
                 private boolean firstPost = true;
@@ -344,7 +344,7 @@ public class Metrics {
      */
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
-        String pluginName = "Spigot";
+        String pluginName = "Tweakkit";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown";
         String serverVersion = Bukkit.getVersion();
