@@ -56,6 +56,25 @@ public abstract class PlayerList {
     private boolean o;
     private int p;
 
+    // Spigot Start
+    private final Map<String, EntityPlayer> playerMap = new java.util.HashMap<String, EntityPlayer>();
+
+    private void removePlayer(EntityPlayer player)
+    {
+        playerMap.remove( player.getName().toLowerCase() );
+    }
+
+    private void addPlayer(EntityPlayer player)
+    {
+        playerMap.put( player.getName().toLowerCase(), player );
+    }
+
+    private EntityPlayer getPlayerByName(String name)
+    {
+        return playerMap.get( name.toLowerCase() );
+    }
+    // Spigot End
+
     // CraftBukkit start
     private CraftServer cserver;
 
@@ -222,6 +241,7 @@ public abstract class PlayerList {
         cserver.detectListNameConflict(entityplayer); // CraftBukkit
         // this.sendAll(new PacketPlayOutPlayerInfo(entityplayer.getName(), true, 1000)); // CraftBukkit - replaced with loop below
         this.players.add(entityplayer);
+        addPlayer( entityplayer ); // Spigot
         WorldServer worldserver = this.server.getWorldServer(entityplayer.dimension);
 
         // CraftBukkit start
@@ -296,6 +316,7 @@ public abstract class PlayerList {
         worldserver.kill(entityplayer);
         worldserver.getPlayerChunkMap().removePlayer(entityplayer);
         this.players.remove(entityplayer);
+        removePlayer( entityplayer ); // Spigot
         this.j.remove(entityplayer.getName());
         ChunkIOExecutor.adjustPoolSize(this.getPlayerCount()); // CraftBukkit
 
@@ -374,23 +395,14 @@ public abstract class PlayerList {
     }
 
     public EntityPlayer processLogin(GameProfile gameprofile, EntityPlayer player) { // CraftBukkit - added EntityPlayer
-        ArrayList arraylist = new ArrayList();
+        // Spigot Start
+        EntityPlayer entityplayer = getPlayer( gameprofile.getName() );
 
-        EntityPlayer entityplayer;
-
-        for (int i = 0; i < this.players.size(); ++i) {
-            entityplayer = (EntityPlayer) this.players.get(i);
-            if (entityplayer.getName().equalsIgnoreCase(gameprofile.getName())) {
-                arraylist.add(entityplayer);
-            }
+        if ( entityplayer != null )
+        {
+            entityplayer.playerConnection.disconnect( "You logged in from another location" );
         }
-
-        Iterator iterator = arraylist.iterator();
-
-        while (iterator.hasNext()) {
-            entityplayer = (EntityPlayer) iterator.next();
-            entityplayer.playerConnection.disconnect("You logged in from another location");
-        }
+        // Spigot End
 
         /* CraftBukkit start
         Object object;
@@ -867,19 +879,7 @@ public abstract class PlayerList {
     }
 
     public EntityPlayer getPlayer(String s) {
-        Iterator iterator = this.players.iterator();
-
-        EntityPlayer entityplayer;
-
-        do {
-            if (!iterator.hasNext()) {
-                return null;
-            }
-
-            entityplayer = (EntityPlayer) iterator.next();
-        } while (!entityplayer.getName().equalsIgnoreCase(s));
-
-        return entityplayer;
+        return getPlayerByName( s ); // Spigot
     }
 
     public List a(ChunkCoordinates chunkcoordinates, int i, int j, int k, int l, int i1, int j1, Map map, String s, String s1, World world) {

@@ -116,14 +116,10 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
     }
 
     public Player getPlayer() {
-        for (Object obj : server.getHandle().players) {
-            EntityPlayer player = (EntityPlayer) obj;
-            if (player.getName().equalsIgnoreCase(getName())) {
-                return (player.playerConnection != null) ? player.playerConnection.getPlayer() : null;
-            }
-        }
-
-        return null;
+        // Spigot Start
+        EntityPlayer player = server.getHandle().getPlayer( name );
+        return ( player != null && player.playerConnection != null ) ? player.getBukkitEntity() : null;
+        // Spigot End
     }
 
     @Override

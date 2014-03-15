@@ -95,13 +95,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     public boolean isOnline() {
-        for (Object obj : server.getHandle().players) {
-            EntityPlayer player = (EntityPlayer) obj;
-            if (player.getName().equalsIgnoreCase(getName())) {
-                return true;
-            }
-        }
-        return false;
+        return server.getHandle().getPlayer( getName() ) != null; // Spigot
     }
 
     public InetSocketAddress getAddress() {
