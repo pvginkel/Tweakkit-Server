@@ -185,7 +185,7 @@ public class PlayerConnection implements PacketPlayInListener {
         // CraftBukkit start - Check for NaN
         if (Double.isNaN(packetplayinflying.x) || Double.isNaN(packetplayinflying.y) || Double.isNaN(packetplayinflying.z) || Double.isNaN(packetplayinflying.stance)) {
             c.warn(player.getName() + " was caught trying to crash the server with an invalid position.");
-            getPlayer().kickPlayer("Nope!");
+            getPlayer().kickPlayer("NaN in position (Hacking?)"); //Spigot "Nope" -> Descriptive reason
             return;
         }
         // CraftBukkit end
@@ -779,7 +779,7 @@ public class PlayerConnection implements PacketPlayInListener {
             this.player.v();
         } else {
             c.warn(this.player.getName() + " tried to set an invalid carried item");
-            this.disconnect("Nope!"); // CraftBukkit
+            this.disconnect("Invalid hotbar selection (Hacking?)"); // CraftBukkit //Spigot "Nope" -> Descriptive reason
         }
     }
 

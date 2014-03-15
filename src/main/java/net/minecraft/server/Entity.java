@@ -219,7 +219,7 @@ public abstract class Entity {
         if ((f == Float.POSITIVE_INFINITY) || (f == Float.NEGATIVE_INFINITY)) {
             if (this instanceof EntityPlayer) {
                 this.world.getServer().getLogger().warning(((CraftPlayer) this.getBukkitEntity()).getName() + " was caught trying to crash the server with an invalid yaw");
-                ((CraftPlayer) this.getBukkitEntity()).kickPlayer("Nope");
+                ((CraftPlayer) this.getBukkitEntity()).kickPlayer("Infinite yaw (Hacking?)"); //Spigot "Nope" -> Descriptive reason
             }
             f = 0;
         }
@@ -232,7 +232,7 @@ public abstract class Entity {
         if ((f1 == Float.POSITIVE_INFINITY) || (f1 == Float.NEGATIVE_INFINITY)) {
             if (this instanceof EntityPlayer) {
                 this.world.getServer().getLogger().warning(((CraftPlayer) this.getBukkitEntity()).getName() + " was caught trying to crash the server with an invalid pitch");
-                ((CraftPlayer) this.getBukkitEntity()).kickPlayer("Nope");
+                ((CraftPlayer) this.getBukkitEntity()).kickPlayer("Infinite pitch (Hacking?)"); //Spigot "Nope" -> Descriptive reason
             }
             f1 = 0;
         }
