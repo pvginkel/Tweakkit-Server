@@ -153,7 +153,7 @@ public abstract class World implements IBlockAccess {
     public boolean pvpMode;
     public boolean keepSpawnInMemory = true;
     public ChunkGenerator generator;
-    Chunk lastChunkAccessed;
+    public Chunk lastChunkAccessed; // Spigot - Make public
     int lastXAccessed = Integer.MIN_VALUE;
     int lastZAccessed = Integer.MIN_VALUE;
     final Object chunkLock = new Object();

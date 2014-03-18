@@ -315,6 +315,13 @@ public class ChunkProviderServer implements IChunkProvider {
                 long chunkcoordinates = this.unloadQueue.popFirst();
                 Chunk chunk = this.chunks.get(chunkcoordinates);
                 if (chunk == null) continue;
+                // Spigot start - Remove the chunk from the cache if it is unloaded
+                Chunk result = world.lastChunkAccessed;
+                if ( result != null && result.locX == chunk.locX && result.locZ == chunk.locZ )
+                {
+                    world.lastChunkAccessed = null;
+                }
+                // Spigot end
 
                 ChunkUnloadEvent event = new ChunkUnloadEvent(chunk.bukkitChunk);
                 server.getPluginManager().callEvent(event);
