@@ -110,6 +110,14 @@ public abstract class CommandBlockListenerAbstract implements ICommandListener {
                 }
             }
 
+            // Spigot start - check for manually prefixed command or commands that don't need a prefix
+            org.bukkit.command.Command commandBlockCommand = commandMap.getCommand(args[0]);
+            if (commandBlockCommand instanceof VanillaCommandWrapper) {
+                this.b = ((VanillaCommandWrapper) commandBlockCommand).dispatchVanillaCommandBlock(this, this.e);
+                return;
+            }
+            // Spigot end
+
             // Make sure this is a valid command
             if (commandMap.getCommand(args[0]) == null) {
                 this.b = 0;
