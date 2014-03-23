@@ -14,6 +14,7 @@ public class PacketPlayOutOpenWindow extends Packet {
     public PacketPlayOutOpenWindow() {}
 
     public PacketPlayOutOpenWindow(int i, int j, String s, int k, boolean flag) {
+        if (s.length() > 32) s = s.substring( 0, 32 ); // Spigot - Cap window name to prevent client disconnects
         this.a = i;
         this.b = j;
         this.c = s;
