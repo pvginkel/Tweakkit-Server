@@ -71,7 +71,8 @@ public class ItemPotion extends Item {
                 while (iterator.hasNext()) {
                     MobEffect mobeffect = (MobEffect) iterator.next();
 
-                    entityhuman.addEffect(new MobEffect(mobeffect));
+                    // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.POTION'
+                    entityhuman.addEffect(new MobEffect(mobeffect), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.POTION);
                 }
             }
         }

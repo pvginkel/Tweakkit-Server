@@ -9,6 +9,7 @@ import net.minecraft.util.com.google.common.collect.Maps;
 
 // CraftBukkit start
 import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.event.entity.EntityPotionEffectChangeEvent; // Tweakkit
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 // CraftBukkit end
 
@@ -115,9 +116,16 @@ public class MobEffectList {
         // CraftBukkit end
         int j;
 
-        if ((this.id != HEAL.id || entityliving1.aQ()) && (this.id != HARM.id || !entityliving1.aQ())) {
-            if (this.id == HARM.id && !entityliving1.aQ() || this.id == HEAL.id && entityliving1.aQ()) {
-                j = (int) (d0 * (double) (6 << i) + 0.5D);
+        // Tweakkit start
+        MobEffect effectEvent = new MobEffect(id,0,i); // Need to construct the MobEffect to use in the Event
+        EntityPotionEffectChangeEvent potionEvent = CraftEventFactory.callEntityPotionEffectChangeEvent(entityliving, effectEvent, EntityPotionEffectChangeEvent.Cause.POTION, entityliving1.world, entityliving1.locX, entityliving1.locY, entityliving1.locZ);
+        if (potionEvent.isCancelled()) {
+            return;
+        }
+        if ((potionEvent.getEffect().getType().getId() != HEAL.id || entityliving1.aQ()) && (potionEvent.getEffect().getType().getId() != HARM.id || !entityliving1.aQ())) {
+            if (potionEvent.getEffect().getType().getId() == HARM.id && !entityliving1.aQ() || potionEvent.getEffect().getType().getId() == HEAL.id && entityliving1.aQ()) {
+                j = (int) (d0 * (double) (6 << potionEvent.getEffect().getAmplifier()) + 0.5D); // CraftBukkit - Apply the amplifier of the event
+                // Tweakkit end
                 if (entityliving == null) {
                     entityliving1.damageEntity(DamageSource.MAGIC, (float) j);
                 } else {
@@ -126,7 +134,8 @@ public class MobEffectList {
                 }
             }
         } else {
-            j = (int) (d0 * (double) (4 << i) + 0.5D);
+            // Tweakkit - Use potionEvent.getEffect().getAmplifier() instead of default i
+            j = (int) (d0 * (double) (4 << potionEvent.getEffect().getAmplifier()) + 0.5D);
             entityliving1.heal((float) j, RegainReason.MAGIC); // CraftBukkit
         }
     }

@@ -121,7 +121,8 @@ public class EntityPotion extends EntityProjectile {
                                     int j = (int) (d1 * (double) mobeffect.getDuration() + 0.5D);
 
                                     if (j > 20) {
-                                        entityliving.addEffect(new MobEffect(i, j, mobeffect.getAmplifier()));
+                                        // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.POTION'
+                                        entityliving.addEffect(new MobEffect(i, j, mobeffect.getAmplifier()), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.POTION);
                                     }
                                 }
                             }

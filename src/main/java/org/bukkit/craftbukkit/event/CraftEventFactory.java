@@ -23,6 +23,7 @@ import net.minecraft.server.IInventory;
 import net.minecraft.server.InventoryCrafting;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.Items;
+import net.minecraft.server.MobEffect; // Tweakkit
 import net.minecraft.server.PacketPlayInCloseWindow;
 import net.minecraft.server.PacketPlayOutSetSlot;
 import net.minecraft.server.Slot;
@@ -30,6 +31,7 @@ import net.minecraft.server.World;
 import net.minecraft.server.WorldServer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location; // Tweakkit
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.Statistic.Type;
@@ -74,6 +76,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.potion.PotionEffect; // Tweakkit
+import org.bukkit.potion.PotionEffectType; // Tweakkit
 
 public class CraftEventFactory {
     public static final DamageSource MELTING = CraftDamageSource.copyOf(DamageSource.BURN);
@@ -790,5 +794,18 @@ public class CraftEventFactory {
         }
         entityHuman.world.getServer().getPluginManager().callEvent(event);
         return (Cancellable) event;
+    }
+
+    public static EntityPotionEffectChangeEvent callEntityPotionEffectChangeEvent(EntityLiving living, MobEffect mobEffect, EntityPotionEffectChangeEvent.Cause cause, World world, double locX, double locY, double locZ){
+        PotionEffect effect = new PotionEffect(PotionEffectType.getById(mobEffect.getEffectId()), mobEffect.getDuration(), mobEffect.getAmplifier());
+        CraftLivingEntity entity = (CraftLivingEntity) living.getBukkitEntity();
+        Location location = new Location(world.getWorld(), locX, locY, locZ);
+        return callEntityPotionEffectChangeEvent(entity, effect, cause, location);
+    }
+
+    public static EntityPotionEffectChangeEvent callEntityPotionEffectChangeEvent(CraftLivingEntity entity, PotionEffect effect, EntityPotionEffectChangeEvent.Cause cause, Location location){
+        EntityPotionEffectChangeEvent event = new EntityPotionEffectChangeEvent(entity, effect, cause, effect.isAmbient(), location);
+        entity.getServer().getPluginManager().callEvent(event);
+        return event;
     }
 }

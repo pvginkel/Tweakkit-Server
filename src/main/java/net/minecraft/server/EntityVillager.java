@@ -101,7 +101,8 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
                     }
                 }
 
-                this.addEffect(new MobEffect(MobEffectList.REGENERATION.id, 200, 0));
+                // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                this.addEffect(new MobEffect(MobEffectList.REGENERATION.id, 200, 0), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
             }
         }
 

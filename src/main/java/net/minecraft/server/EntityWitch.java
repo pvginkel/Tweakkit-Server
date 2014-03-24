@@ -74,7 +74,8 @@ public class EntityWitch extends EntityMonster implements IRangedEntity {
                             while (iterator.hasNext()) {
                                 MobEffect mobeffect = (MobEffect) iterator.next();
 
-                                this.addEffect(new MobEffect(mobeffect));
+                                // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                                this.addEffect(new MobEffect(mobeffect), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
                             }
                         }
                     }

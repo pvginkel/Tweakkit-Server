@@ -1,5 +1,7 @@
 package net.minecraft.server;
 
+import org.bukkit.event.entity.EntityPotionEffectChangeEvent; // Tweakkit
+
 public class ItemFish extends ItemFood {
 
     private final boolean b;
@@ -29,12 +31,14 @@ public class ItemFish extends ItemFood {
         EnumFish enumfish = EnumFish.a(itemstack);
 
         if (enumfish == EnumFish.PUFFERFISH) {
-            entityhuman.addEffect(new MobEffect(MobEffectList.POISON.id, 1200, 3));
-            entityhuman.addEffect(new MobEffect(MobEffectList.HUNGER.id, 300, 2));
-            entityhuman.addEffect(new MobEffect(MobEffectList.CONFUSION.id, 300, 1));
+            // Tweakkit start - Added 'EntityPotionEffectChangeEvent.Cause.FOOD'
+            entityhuman.addEffect(new MobEffect(MobEffectList.POISON.id, 1200, 3), EntityPotionEffectChangeEvent.Cause.FOOD);
+            entityhuman.addEffect(new MobEffect(MobEffectList.HUNGER.id, 300, 2), EntityPotionEffectChangeEvent.Cause.FOOD);
+            entityhuman.addEffect(new MobEffect(MobEffectList.CONFUSION.id, 300, 1), EntityPotionEffectChangeEvent.Cause.FOOD);
+            // Tweakkit end
         }
 
-        super.c(itemstack, world, entityhuman);
+        //super.c(itemstack, world, entityhuman); Tweakkit - Causes the client to add effects even if events are cancelled
     }
 
     public String a(ItemStack itemstack) {

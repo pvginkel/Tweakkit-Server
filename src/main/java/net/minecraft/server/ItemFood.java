@@ -34,7 +34,8 @@ public class ItemFood extends Item {
 
     protected void c(ItemStack itemstack, World world, EntityHuman entityhuman) {
         if (!world.isStatic && this.n > 0 && world.random.nextFloat() < this.q) {
-            entityhuman.addEffect(new MobEffect(this.n, this.o * 20, this.p));
+            // Tweakkit - 'Added EntityPotionEffectChangeEvent.Cause.FOOD'
+            entityhuman.addEffect(new MobEffect(this.n, this.o * 20, this.p), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.FOOD);
         }
     }
 
