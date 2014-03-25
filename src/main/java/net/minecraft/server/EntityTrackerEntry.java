@@ -299,6 +299,7 @@ public class EntityTrackerEntry {
     }
 
     public void updatePlayer(EntityPlayer entityplayer) {
+        org.spigotmc.AsyncCatcher.catchOp( "player tracker update"); // Spigot
         if (entityplayer != this.tracker) {
             double d0 = entityplayer.locX - (double) (this.xLoc / 32);
             double d1 = entityplayer.locZ - (double) (this.zLoc / 32);
@@ -515,6 +516,7 @@ public class EntityTrackerEntry {
     }
 
     public void clear(EntityPlayer entityplayer) {
+        org.spigotmc.AsyncCatcher.catchOp( "player tracker clear"); // Spigot
         if (this.trackedPlayers.contains(entityplayer)) {
             this.trackedPlayers.remove(entityplayer);
             entityplayer.d(this.tracker);
