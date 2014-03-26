@@ -320,7 +320,7 @@ public class EntityItem extends Entity {
     public ItemStack getItemStack() {
         ItemStack itemstack = this.getDataWatcher().getItemStack(10);
 
-        return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack; 
+        return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
     }
 
     public void setItemStack(ItemStack itemstack) {

@@ -51,7 +51,7 @@ public abstract class PlayerList {
     public IPlayerFileData playerFileData; // CraftBukkit - private -> public
     public boolean hasWhitelist; // CraftBukkit - private -> public
     protected int maxPlayers;
-    protected int m;
+    private int m;
     private EnumGamemode n;
     private boolean o;
     private int p;

@@ -8,11 +8,10 @@ public class StatisticManager {
 
     protected final Map a = Maps.newConcurrentMap();
 
-    public StatisticManager() {
-    }
+    public StatisticManager() {}
 
     public boolean a(Achievement achievement) {
-        return this.getStatisticValue((Statistic) achievement) > 0;
+        return this.getStatisticValue(achievement) > 0;
     }
 
     public boolean b(Achievement achievement) {

@@ -182,7 +182,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         this.c((this.getMaxBuildHeight() + 8) / 16 * 16);
         this.c(MathHelper.a(this.getMaxBuildHeight(), 64, 256));
         this.propertyManager.a("max-build-height", Integer.valueOf(this.getMaxBuildHeight()));
-        h.info("Preparing level \"" + this.M() + "\"");
+        h.info("Preparing level \"" + this.N() + "\"");
         this.a(this.N(), this.N(), k, worldtype, s2);
         long i1 = System.nanoTime() - j;
         String s3 = String.format("%.3fs", new Object[] { Double.valueOf((double) i1 / 1.0E9D)});
