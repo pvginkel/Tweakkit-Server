@@ -172,7 +172,14 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
                 // CraftBukkit end
 
                 this.world.createExplosion(this, this.locX, this.locY + (double) this.getHeadHeight(), this.locZ, 7.0F, false, this.world.getGameRules().getBoolean("mobGriefing"));
-                this.world.b(1013, (int) this.locX, (int) this.locY, (int) this.locZ, 0);
+                // Spigot start
+                if(this.world.spigotConfig.witherSpawnSoundRadius > 0){
+                    this.world.getServer().getHandle().sendPacketNearby((int) this.locX, (int) this.locY, (int) this.locZ, this.world.spigotConfig.witherSpawnSoundRadius, this.dimension, new PacketPlayOutWorldEvent(1013, (int) this.locX, (int) this.locY, (int) this.locZ, 0, true));
+                }
+                else {
+                    this.world.b(1013, (int) this.locX, (int) this.locY, (int) this.locZ, 0);
+                }
+                // Spigot end
             }
 
             this.s(i);
