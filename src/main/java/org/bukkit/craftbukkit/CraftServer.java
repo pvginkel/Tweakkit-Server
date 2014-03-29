@@ -1341,6 +1341,7 @@ public final class CraftServer implements Server {
 
     // TODO: In 1.7.6+ this should just lookup the UUID-based player data filename
     public OfflinePlayer getOfflinePlayer(UUID id) {
+        com.google.common.base.Preconditions.checkState(!Bukkit.isPrimaryThread(), "Cannot call getOfflinePlayer(UUID) on main thread, this operation is blocking!"); // Spigot
         String name = MojangNameLookup.lookupName(id);
         if (name == null) {
             // This is completely wrong
