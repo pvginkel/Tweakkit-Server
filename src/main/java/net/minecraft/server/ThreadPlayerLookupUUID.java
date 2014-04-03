@@ -33,7 +33,9 @@ class ThreadPlayerLookupUUID extends Thread {
             }
             // Spigot End
             String s = (new BigInteger(MinecraftEncryption.a(LoginListener.a(this.a), LoginListener.b(this.a).J().getPublic(), LoginListener.c(this.a)))).toString(16);
-            LoginListener.a(this.a, LoginListener.b(this.a).at().hasJoinedServer(new GameProfile((String) null, LoginListener.d(this.a).getName()), s));
+            //LoginListener.a(this.a, LoginListener.b(this.a).at().hasJoinedServer(new GameProfile((String) null, LoginListener.d(this.a).getName()), s));
+            org.spigotmc.authlib.GameProfile profile = LoginListener.b(this.a).newSessionService.hasJoinedServer( new org.spigotmc.authlib.GameProfile( null, LoginListener.d(this.a).getName() ), s );
+            LoginListener.a(this.a, new NewGameProfileWrapper( profile ) );
             if (LoginListener.d(this.a) != null) {
                 // Spigot Start
                 fireLoginEvents();
@@ -94,5 +96,16 @@ class ThreadPlayerLookupUUID extends Thread {
             }
         }
         // CraftBukkit end
+    }
+
+    public static class NewGameProfileWrapper extends GameProfile {
+
+        public org.spigotmc.authlib.GameProfile newProfile;
+
+        public NewGameProfileWrapper(org.spigotmc.authlib.GameProfile newProfile)
+        {
+            super( newProfile.getId().toString().replaceAll( "-", "" ), newProfile.getName() );
+            this.newProfile = newProfile;
+        }
     }
 }

@@ -47,6 +47,12 @@ public abstract class Packet {
 
     public abstract void b(PacketDataSerializer packetdataserializer) throws IOException; // CraftBukkit - added throws
 
+    // Spigot start
+    public void writeSnapshot(PacketDataSerializer packetDataSerializer) throws IOException {
+        b( packetDataSerializer );
+    }
+    // Spigot end
+
     public abstract void handle(PacketListener packetlistener);
 
     public boolean a() {

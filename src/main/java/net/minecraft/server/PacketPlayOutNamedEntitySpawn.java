@@ -2,6 +2,7 @@ package net.minecraft.server;
 
 import java.util.List;
 
+import org.spigotmc.authlib.properties.Property;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import java.io.IOException; // CraftBukkit
@@ -59,6 +60,41 @@ public class PacketPlayOutNamedEntitySpawn extends Packet {
         packetdataserializer.writeShort(this.h);
         this.i.a(packetdataserializer);
     }
+
+    // Spigot start
+    @Override
+    public void writeSnapshot(PacketDataSerializer packetdataserializer) throws IOException
+    { // CraftBukkit - added throws
+        packetdataserializer.b( this.a );
+        packetdataserializer.a( EntityHuman.a( this.b ).toString() );
+        packetdataserializer.a( this.b.getName().length() > 16 ? this.b.getName().substring( 0, 16 ) : this.b.getName() ); // CraftBukkit - Limit name length to 16 characters
+
+        if ( this.b instanceof ThreadPlayerLookupUUID.NewGameProfileWrapper )
+        {
+            org.spigotmc.authlib.GameProfile newProfile = ((ThreadPlayerLookupUUID.NewGameProfileWrapper) b).newProfile;
+            packetdataserializer.b( newProfile.getProperties().size() );
+            for ( String key : newProfile.getProperties().keys() )
+            {
+                for ( Property prop : newProfile.getProperties().get( key ) )
+                {
+                    packetdataserializer.a( prop.getName() );
+                    packetdataserializer.a( prop.getValue() );
+                    packetdataserializer.a( prop.getSignature() );
+                }
+            }
+        } else {
+            packetdataserializer.b( 0 );
+        }
+        packetdataserializer.writeInt( this.c );
+        packetdataserializer.writeInt( this.d );
+        packetdataserializer.writeInt( this.e );
+        packetdataserializer.writeByte( this.f );
+        packetdataserializer.writeByte( this.g );
+        packetdataserializer.writeShort( this.h );
+        this.i.a( packetdataserializer );
+    }
+
+    // Spigot end
 
     public void a(PacketPlayOutListener packetplayoutlistener) {
         packetplayoutlistener.a(this);

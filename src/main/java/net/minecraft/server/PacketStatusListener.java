@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 
 // CraftBukkit start
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.bukkit.craftbukkit.util.CraftIconCache;
 import org.bukkit.entity.Player;
@@ -117,13 +118,22 @@ public class PacketStatusListener implements PacketStatusInListener {
             profiles = profiles.subList( 0, Math.min( profiles.size(), org.spigotmc.SpigotConfig.playerSample ) ); // Cap the sample to n (or less) displayed players, ie: Vanilla behaviour
         }
         // Spigot End
-        playerSample.a(profiles.toArray(new GameProfile[profiles.size()]));
+        // Spigot start
+        GameProfile[] aProfiles = profiles.toArray( new GameProfile[ profiles.size() ] );
+        if ( networkManager.m.attr( HandshakeListener.protocolVersion ).get() == 5 )
+        {
+            for (int i = 0; i < aProfiles.length; i++) {
+                aProfiles[i] = new GameProfileWrapper( EntityHuman.a( aProfiles[i] ), aProfiles[i].getName() );
+            }
+        }
+        // Spigot end
+        playerSample.a(aProfiles);
 
         ServerPing ping = new ServerPing();
         ping.setFavicon(event.icon.value);
         ping.setMOTD(new ChatComponentText(event.getMotd()));
         ping.setPlayerSample(playerSample);
-        ping.setServerInfo(new ServerPingServerData(minecraftServer.getServerModName() + " " + minecraftServer.getVersion(), 4)); // TODO: Update when protocol changes
+        ping.setServerInfo(new ServerPingServerData(minecraftServer.getServerModName() + " " + minecraftServer.getVersion(), networkManager.m.attr( HandshakeListener.protocolVersion ).get())); // Spigot // TODO: Update when protocol changes
 
         this.networkManager.handle(new PacketStatusOutServerInfo(ping), new GenericFutureListener[0]);
         // CraftBukkit end
@@ -132,4 +142,23 @@ public class PacketStatusListener implements PacketStatusInListener {
     public void a(PacketStatusInPing packetstatusinping) {
         this.networkManager.handle(new PacketStatusOutPong(packetstatusinping.c()), new GenericFutureListener[0]);
     }
+
+
+    // Spigot start
+    private static class GameProfileWrapper extends GameProfile {
+
+        private final UUID uuid;
+
+        public GameProfileWrapper(UUID uuid, String name) {
+            super("", name);
+            this.uuid = uuid;
+        }
+
+        @Override
+        public String getId() {
+            return uuid.toString();
+        }
+    }
+
+    // Spigot end
 }

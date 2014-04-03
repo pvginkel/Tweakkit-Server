@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import net.minecraft.util.io.netty.util.AttributeKey;
 import net.minecraft.util.io.netty.util.concurrent.GenericFutureListener;
 
 // CraftBukkit start
@@ -13,6 +14,7 @@ public class HandshakeListener implements PacketHandshakingInListener {
     private static final HashMap<InetAddress, Long> throttleTracker = new HashMap<InetAddress, Long>();
     private static int throttleCounter = 0;
     // CraftBukkit end
+    public static final AttributeKey<Integer> protocolVersion = new AttributeKey<Integer>( "protocolVersion" ); // Spigot
 
     private final MinecraftServer a;
     private final NetworkManager b;
@@ -23,6 +25,12 @@ public class HandshakeListener implements PacketHandshakingInListener {
     }
 
     public void a(PacketHandshakingInSetProtocol packethandshakinginsetprotocol) {
+        // Spigot start
+        b.m.attr( protocolVersion ).set( 4 );
+        if (packethandshakinginsetprotocol.d() == 5) {
+            b.m.attr( protocolVersion ).set( 5 );
+        }
+        // Spigot end
         switch (ProtocolOrdinalWrapper.a[packethandshakinginsetprotocol.c().ordinal()]) {
         case 1:
             this.b.a(EnumProtocol.LOGIN);
@@ -62,8 +70,7 @@ public class HandshakeListener implements PacketHandshakingInListener {
                 org.apache.logging.log4j.LogManager.getLogger().debug("Failed to check connection throttle", t);
             }
             // CraftBukkit end
-
-            if (packethandshakinginsetprotocol.d() > 4) {
+            if (packethandshakinginsetprotocol.d() > 5) { // Spigot
                 chatcomponenttext = new ChatComponentText( org.spigotmc.SpigotConfig.outdatedServerMessage ); // Spigot
                 this.b.handle(new PacketLoginOutDisconnect(chatcomponenttext), new GenericFutureListener[0]);
                 this.b.close(chatcomponenttext);

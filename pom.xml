@@ -31,6 +31,10 @@
       <id>repobo-snap</id>
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
+    <repository>
+      <id>vanilla</id>
+      <url>https://libraries.minecraft.net/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -113,6 +117,21 @@
       <groupId>net.sf.trove4j</groupId>
       <artifactId>trove4j</artifactId>
       <version>3.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.6</version>
     </dependency>
   </dependencies>
 

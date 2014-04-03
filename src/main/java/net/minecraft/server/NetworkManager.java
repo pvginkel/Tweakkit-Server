@@ -35,7 +35,7 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private final boolean j;
     private final Queue k = Queues.newConcurrentLinkedQueue();
     private final Queue l = Queues.newConcurrentLinkedQueue();
-    private Channel m;
+    public Channel m; // Spigot
     public SocketAddress n; // Spigot
     public String spoofedUUID; // Spigot
     private PacketListener o;

@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import javax.imageio.ImageIO;
 
+import org.spigotmc.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import net.minecraft.util.com.google.common.base.Charsets;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -107,6 +107,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     private static final int TICK_TIME = 1000000000 / TPS;
     private static final int SAMPLE_INTERVAL = 100;
     public final double[] recentTps = new double[ 3 ];
+    public final org.spigotmc.authlib.minecraft.MinecraftSessionService newSessionService;
     // Spigot end
 
     public MinecraftServer(OptionSet options, Proxy proxy) { // CraftBukkit - signature file -> OptionSet
@@ -117,6 +118,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.n = new CommandDispatcher();
         // this.convertable = new WorldLoaderServer(file1); // CraftBukkit - moved to DedicatedServer.init
         this.S = (new YggdrasilAuthenticationService(proxy, UUID.randomUUID().toString())).createMinecraftSessionService();
+        newSessionService = new org.spigotmc.authlib.yggdrasil.YggdrasilAuthenticationService(proxy, UUID.randomUUID().toString()).createMinecraftSessionService();
 
         // CraftBukkit start
         this.options = options;
@@ -871,7 +873,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     }
 
     public String getVersion() {
-        return "1.7.5";
+        return "1.7.8";
     }
 
     public int C() {
