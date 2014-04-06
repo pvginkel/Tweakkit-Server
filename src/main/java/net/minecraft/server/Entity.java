@@ -1144,6 +1144,8 @@ public abstract class Entity {
                     nbttagcompound.set("Riding", nbttagcompound1);
                 }
             }
+            // Tweakkit - Set custom data before proceeding
+            this.getBukkitEntity().saveCustomData(nbttagcompound);
         } catch (Throwable throwable) {
             CrashReport crashreport = CrashReport.a(throwable, "Saving entity NBT");
             CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Entity being saved");
@@ -1252,6 +1254,8 @@ public abstract class Entity {
                 this.spawnIn(bworld == null ? null : ((CraftWorld) bworld).getHandle());
             }
             // CraftBukkit end
+            // Tweakkit - Set custom data before proceeding
+            this.getBukkitEntity().readCustomdata(nbttagcompound);
         } catch (Throwable throwable) {
             CrashReport crashreport = CrashReport.a(throwable, "Loading entity NBT");
             CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Entity being loaded");

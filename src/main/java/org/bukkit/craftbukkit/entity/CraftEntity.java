@@ -17,6 +17,11 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+// Tweakkit start
+import com.afterkraft.configuration.CustomDataCompound;
+import com.afterkraft.configuration.CustomDataNBTFactory;
+// Tweakkit end
+
 public abstract class CraftEntity implements org.bukkit.entity.Entity {
     protected final CraftServer server;
     protected Entity entity;
@@ -415,4 +420,28 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         return spigot;
     }
     // Spigot end
+
+    // Tweakkit start
+    private CustomDataCompound customData = new CustomDataCompound();
+
+    @Override
+    public CustomDataCompound getCustomData() {
+        return customData == null ? new CustomDataCompound() : customData;
+    }
+
+    public void readCustomdata(NBTTagCompound compound) {
+        if (compound.hasKey("tweakkit")) {
+            NBTTagCompound data = compound.getCompound("tweakkit");
+            customData = CustomDataNBTFactory.fromNBTtoCustom(data);
+        }
+    }
+
+    public void saveCustomData(NBTTagCompound compound) {
+        if (!compound.hasKey("tweakkit")) {
+            compound.set("tweakkit", new NBTTagCompound());
+        }
+        if (!this.getCustomData().isEmpty())
+            compound.set("tweakkit", CustomDataNBTFactory.fromCustomToNBT(this.getCustomData()));
+    }
+    // Tweakkit end
 }
