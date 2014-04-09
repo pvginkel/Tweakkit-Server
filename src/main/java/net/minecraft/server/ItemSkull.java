@@ -68,6 +68,7 @@ public class ItemSkull extends Item {
                     ((TileEntitySkull) tileentity).setSkullType(itemstack.getData(), s);
                     ((TileEntitySkull) tileentity).setRotation(i1);
                     ((BlockSkull) Blocks.SKULL).a(world, i, j, k, (TileEntitySkull) tileentity);
+                    org.spigotmc.HeadConverter.convertHead( (TileEntitySkull) tileentity ); // Spigot
                 }
 
                 --itemstack.count;

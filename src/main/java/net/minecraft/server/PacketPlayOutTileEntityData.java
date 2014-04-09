@@ -1,5 +1,7 @@
 package net.minecraft.server;
 
+import net.minecraft.util.com.mojang.authlib.GameProfile;
+
 public class PacketPlayOutTileEntityData extends Packet {
 
     private int a;
@@ -41,12 +43,14 @@ public class PacketPlayOutTileEntityData extends Packet {
         packetdataserializer.writeShort(this.b);
         packetdataserializer.writeInt(this.c);
         packetdataserializer.writeByte((byte) this.d);
-        if ( this.e.hasKey( "ExtraType" ) )
+        if ( this.e.hasKey( "ExtraType" ) && !this.e.hasKey( "Owner" ) )
         {
             NBTTagCompound profile = new NBTTagCompound();
             profile.setString( "Name", this.e.getString( "ExtraType" ) );
             profile.setString( "Id", "" );
             this.e.set( "Owner", profile );
+        } else {
+            this.e.remove( "ExtraType" );
         }
         packetdataserializer.a(this.e);
     }

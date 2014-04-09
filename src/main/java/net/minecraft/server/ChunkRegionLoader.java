@@ -378,6 +378,12 @@ public class ChunkRegionLoader implements IChunkLoader, IAsyncChunkSaver {
                 TileEntity tileentity = TileEntity.c(nbttagcompound4);
 
                 if (tileentity != null) {
+                    // Spigot start
+                    if ( tileentity instanceof TileEntitySkull )
+                    {
+                        org.spigotmc.HeadConverter.convertHead( (TileEntitySkull) tileentity );
+                    }
+                    // Spigot end
                     chunk.a(tileentity);
                 }
             }

@@ -513,6 +513,13 @@ public class Chunk {
                     if (tileentity != null) {
                         tileentity.u();
                     }
+
+                    // Spigot start
+                    if ( tileentity instanceof TileEntitySkull )
+                    {
+                        org.spigotmc.HeadConverter.convertHead( (TileEntitySkull) tileentity );
+                    }
+                    // Spigot end
                 }
 
                 this.n = true;

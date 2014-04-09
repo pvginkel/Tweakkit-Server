@@ -5,6 +5,7 @@ public class TileEntitySkull extends TileEntity {
     private int a;
     private int i;
     private String j = "";
+    private NBTTagCompound owner = null;
 
     public TileEntitySkull() {}
 
@@ -13,6 +14,7 @@ public class TileEntitySkull extends TileEntity {
         nbttagcompound.setByte("SkullType", (byte) (this.a & 255));
         nbttagcompound.setByte("Rot", (byte) (this.i & 255));
         nbttagcompound.setString("ExtraType", this.j);
+        if ( owner != null ) nbttagcompound.set( "Owner", owner );
     }
 
     public void a(NBTTagCompound nbttagcompound) {
@@ -21,6 +23,10 @@ public class TileEntitySkull extends TileEntity {
         this.i = nbttagcompound.getByte("Rot");
         if (nbttagcompound.hasKeyOfType("ExtraType", 8)) {
             this.j = nbttagcompound.getString("ExtraType");
+        }
+        if ( nbttagcompound.hasKey( "Owner" ) )
+        {
+            owner = nbttagcompound.getCompound( "Owner" );
         }
     }
 
