@@ -56,7 +56,7 @@ public class NameReferencingFileConverter {
     private static void a(MinecraftServer minecraftserver, Collection collection, ProfileLookupCallback profilelookupcallback) {
         String[] astring = (String[]) Iterators.toArray(Iterators.filter(collection.iterator(), new PredicateEmptyList()), String.class);
 
-        if (minecraftserver.getOnlineMode()) {
+        if (minecraftserver.getOnlineMode() || org.spigotmc.SpigotConfig.bungee) { // Spigot: bungee = online mode, for now.
             minecraftserver.getGameProfileRepository().findProfilesByNames(astring, Agent.MINECRAFT, profilelookupcallback);
         } else {
             String[] astring1 = astring;
