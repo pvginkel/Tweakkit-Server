@@ -26,6 +26,12 @@ public class HandshakeListener implements PacketHandshakingInListener {
     }
 
     public void a(PacketHandshakingInSetProtocol packethandshakinginsetprotocol) {
+        // Spigot start
+        if ( NetworkManager.SUPPORTED_VERSIONS.contains( packethandshakinginsetprotocol.d() ) )
+        {
+            NetworkManager.a( this.b ).attr( NetworkManager.protocolVersion ).set( packethandshakinginsetprotocol.d() );
+        }
+        // Spigot end
         switch (ProtocolOrdinalWrapper.a[packethandshakinginsetprotocol.c().ordinal()]) {
         case 1:
             this.b.a(EnumProtocol.LOGIN);
@@ -70,7 +76,7 @@ public class HandshakeListener implements PacketHandshakingInListener {
                 chatcomponenttext = new ChatComponentText( org.spigotmc.SpigotConfig.outdatedServerMessage ); // Spigot
                 this.b.handle(new PacketLoginOutDisconnect(chatcomponenttext), new GenericFutureListener[0]);
                 this.b.close(chatcomponenttext);
-            } else if (packethandshakinginsetprotocol.d() < 5) {
+            } else if (packethandshakinginsetprotocol.d() < 4) {
                 chatcomponenttext = new ChatComponentText( org.spigotmc.SpigotConfig.outdatedClientMessage ); // Spigot
                 this.b.handle(new PacketLoginOutDisconnect(chatcomponenttext), new GenericFutureListener[0]);
                 this.b.close(chatcomponenttext);

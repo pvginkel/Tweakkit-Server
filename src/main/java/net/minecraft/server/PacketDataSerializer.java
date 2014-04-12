@@ -19,10 +19,19 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack; // CraftBukkit
 public class PacketDataSerializer extends ByteBuf {
 
     private final ByteBuf a;
+    // Spigot Start
+    public final int version;
 
-    public PacketDataSerializer(ByteBuf bytebuf) {
-        this.a = bytebuf;
+    public PacketDataSerializer(ByteBuf bytebuf)
+    {
+        this( bytebuf, NetworkManager.CURRENT_VERSION );
     }
+
+    public PacketDataSerializer(ByteBuf bytebuf, int version) {
+        this.a = bytebuf;
+        this.version = version;
+    }
+    // Spigot End
 
     public static int a(int i) {
         return (i & -128) == 0 ? 1 : ((i & -16384) == 0 ? 2 : ((i & -2097152) == 0 ? 3 : ((i & -268435456) == 0 ? 4 : 5)));
