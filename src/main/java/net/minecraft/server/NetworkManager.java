@@ -22,6 +22,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+// Spigot start
+import com.google.common.collect.ImmutableSet;
+// Spigot end
 
 public class NetworkManager extends SimpleChannelInboundHandler {
 
@@ -47,6 +50,20 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private EnumProtocol p;
     private IChatBaseComponent q;
     private boolean r;
+    // Spigot Start
+    public static final AttributeKey<Integer> protocolVersion = new AttributeKey<Integer>("protocol_version");
+    public static final ImmutableSet<Integer> SUPPORTED_VERSIONS = ImmutableSet.of(4, 5);
+    public static final int CURRENT_VERSION = 5;
+    public static int getVersion(Channel attr)
+    {
+        Integer ver = attr.attr( protocolVersion ).get();
+        return ( ver != null ) ? ver : CURRENT_VERSION;
+    }
+    public int getVersion()
+    {
+        return getVersion( this.m );
+    }
+    // Spigot End
 
     public NetworkManager(boolean flag) {
         this.j = flag;

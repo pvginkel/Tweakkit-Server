@@ -23,6 +23,7 @@ public class TileEntitySkull extends TileEntity {
 
             GameProfileSerializer.serialize(nbttagcompound1, this.j);
             nbttagcompound.set("Owner", nbttagcompound1);
+            nbttagcompound.setString("ExtraType", nbttagcompound1.getString("Name")); // Spigot
         }
     }
 

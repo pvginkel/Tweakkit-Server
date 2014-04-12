@@ -66,8 +66,9 @@ public class PacketPlayOutNamedEntitySpawn extends Packet {
         packetdataserializer.b(this.a);
         UUID uuid = this.b.getId();
 
-        packetdataserializer.a(uuid == null ? "" : uuid.toString());
+        packetdataserializer.a( uuid == null ? "" : ( ( packetdataserializer.version >= 5 ) ? uuid.toString() : uuid.toString().replaceAll( "-", "" ) ) ); // Spigot
         packetdataserializer.a(this.b.getName().length() > 16 ? this.b.getName().substring(0, 16) : this.b.getName()); // CraftBukkit - Limit name length to 16 characters
+        if (packetdataserializer.version >= 5 ) { // Spigot
         packetdataserializer.b(this.b.getProperties().size());
         Iterator iterator = this.b.getProperties().values().iterator();
 
@@ -78,6 +79,7 @@ public class PacketPlayOutNamedEntitySpawn extends Packet {
             packetdataserializer.a(property.getValue());
             packetdataserializer.a(property.getSignature());
         }
+        } // Spigot
 
         packetdataserializer.writeInt(this.c);
         packetdataserializer.writeInt(this.d);
