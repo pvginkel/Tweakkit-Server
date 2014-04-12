@@ -147,7 +147,7 @@ public class EntityBoat extends Entity {
         return !this.dead;
     }
 
-        public void h() {
+    public void h() {
         // CraftBukkit start
         double prevX = this.locX;
         double prevY = this.locY;
