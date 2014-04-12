@@ -1738,7 +1738,7 @@ public class PlayerConnection implements PacketPlayInListener {
                     }
 
                     if (itemstack.getItem() == Items.WRITTEN_BOOK && itemstack1.getItem() == Items.BOOK_AND_QUILL) {
-                        CraftEventFactory.handleEditBookEvent(player, itemstack); // CraftBukkit
+                        CraftEventFactory.handleEditBookEvent(player, itemstack); // CraftBukkit
                     }
 
                     return;
