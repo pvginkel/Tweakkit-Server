@@ -1225,6 +1225,12 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         }
     }
 
+    // Spigot Start
+    public ServerConnection getServerConnection()
+    {
+        return this.p;
+    }
+    // Spigot End
     public ServerConnection ai() {
         return this.p;
     }
