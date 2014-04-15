@@ -42,6 +42,12 @@ public class ItemSkull extends Item {
             }
 
             if (!world.isStatic) {
+                // Spigot Start
+                if ( !Blocks.SKULL.canPlace( world, i, j, k ) )
+                {
+                    return false;
+                }
+                // Spigot End
                 world.setTypeAndData(i, j, k, Blocks.SKULL, l, 2);
                 int i1 = 0;
 
