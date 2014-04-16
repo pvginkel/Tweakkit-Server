@@ -993,6 +993,14 @@ public class EntityHorse extends EntityAnimal implements IInventoryListener {
         if (nbttagcompound.hasKeyOfType("OwnerUUID", 8)) {
             this.setOwnerUUID(nbttagcompound.getString("OwnerUUID"));
         }
+        // Spigot start
+        else if (nbttagcompound.hasKey("OwnerName")) {
+            String owner = nbttagcompound.getString("OwnerName");
+            if (owner != null && !owner.isEmpty()) {
+                this.setOwnerUUID(NameReferencingFileConverter.a(owner));
+            }
+        }
+        // Spigot end
         // CraftBukkit start
         if (nbttagcompound.hasKey("Bukkit.MaxDomestication")) {
             this.maxDomestication = nbttagcompound.getInt("Bukkit.MaxDomestication");
