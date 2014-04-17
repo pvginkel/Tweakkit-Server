@@ -41,7 +41,7 @@ final class CraftScore implements Score {
         Scoreboard board = objective.checkState().board;
 
         if (board.getPlayers().contains(entry)) { // Lazy
-            Map<String, ScoreboardScore> scores = board.getPlayerObjectives(entry);
+            Map<net.minecraft.server.ScoreboardObjective, ScoreboardScore> scores = board.getPlayerObjectives(entry); // Spigot
             ScoreboardScore score = scores.get(objective.getHandle());
             if (score != null) { // Lazy
                 return score.getScore();
@@ -54,6 +54,15 @@ final class CraftScore implements Score {
     public void setScore(int score) throws IllegalStateException {
         objective.checkState().board.getPlayerScoreForObjective(entry, objective.getHandle()).setScore(score);
     }
+
+    // Spigot start
+    @Override    
+    public boolean isScoreSet() throws IllegalStateException {
+        Scoreboard board = objective.checkState().board;
+
+        return board.getPlayers().contains(entry) && board.getPlayerObjectives(entry).containsKey(objective.getHandle());
+    }
+    // Spigot end
 
     public CraftScoreboard getScoreboard() {
         return objective.getScoreboard();
