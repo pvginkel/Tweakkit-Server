@@ -750,6 +750,11 @@ public class Chunk {
 
             tileentity.t();
             this.tileEntities.put(chunkposition, tileentity);
+            // Spigot start - The tile entity has a world, now hoppers can be born ticking.
+            if (this.world.spigotConfig.altHopperTicking) {
+                this.world.triggerHoppersList.add(tileentity);
+            }
+            // Spigot end
             // CraftBukkit start
         } else {
             System.out.println("Attempted to place a tile entity (" + tileentity + ") at " + tileentity.x + "," + tileentity.y + "," + tileentity.z
