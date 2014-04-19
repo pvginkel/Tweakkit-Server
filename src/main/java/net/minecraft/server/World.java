@@ -113,6 +113,7 @@ public abstract class World implements IBlockAccess {
     private final byte chunkTickRadius;
     public static boolean haveWeSilencedAPhysicsCrash;
     public static String blockLocation;
+    public List<TileEntity> triggerHoppersList = new ArrayList<TileEntity>(); // Spigot, When altHopperTicking, tile entities being added go through here.
 
     public static long chunkToKey(int x, int z)
     {
@@ -129,6 +130,42 @@ public abstract class World implements IBlockAccess {
     public static int keyToZ(long k)
     {
         return (int) ( ( ( k >> 32 ) & 0xFFFF0000L ) | ( ( k >> 16 ) & 0x0000FFFF ) );
+    }
+
+    // Spigot Start - Hoppers need to be born ticking.
+    private void initializeHoppers() {
+        if (this.spigotConfig.altHopperTicking) {
+            for (TileEntity o : this.triggerHoppersList) {
+                o.scheduleTicks();
+                if (o instanceof TileEntityHopper) {
+                    ((TileEntityHopper) o).convertToScheduling();
+                    ((TileEntityHopper) o).scheduleHopperTick();
+                }
+            }
+        }
+        triggerHoppersList.clear();
+    }
+    
+    // Helper method for altHopperTicking. Updates chests at the specified location,
+    // accounting for double chests. Updating the chest will update adjacent hoppers.
+    public void updateChestAndHoppers(int a, int b, int c) {
+        Block block = this.getType(a, b, c);
+        if (block instanceof BlockChest) {
+            TileEntity tile = this.getTileEntity(a, b, c);
+            if (tile instanceof TileEntityChest) {
+                tile.scheduleTicks();
+            }
+            for (int i = 2; i < 6; i++) {
+            	// Facing class provides arrays for direction offset.
+                if (this.getType(a + Facing.b[i], b, c + Facing.d[i]) == block) {
+                    tile = this.getTileEntity(a + Facing.b[i], b, c + Facing.d[i]);
+                    if (tile instanceof TileEntityChest) {
+                        tile.scheduleTicks();
+                    }
+                    break;
+                }
+            }
+        }
     }
     // Spigot end
 
@@ -407,6 +444,14 @@ public abstract class World implements IBlockAccess {
                     this.notifyAndUpdatePhysics(i, j, k, chunk, block1, block, i1);
                 // CraftBukkit end
                 }
+                // Spigot start - If this block is changing to that which a chest beneath it
+                // becomes able to be opened, then the chest must be updated.
+                // block1 is the old block. block is the new block. r returns true if the block type
+                // prevents access to a chest.
+                if (this.spigotConfig.altHopperTicking && block1 != null && block1.r() && !block.r()) {
+                    this.updateChestAndHoppers(i, j - 1, k);
+                }
+                // Spigot end
 
                 return flag;
             }
@@ -1433,8 +1478,9 @@ public abstract class World implements IBlockAccess {
             this.tileEntityList.removeAll(this.b);
             this.b.clear();
         }
-        // CraftBukkit end
+        // Spigot End
 
+        this.initializeHoppers(); // Spigot - Initializes hoppers which have been added recently.
         Iterator iterator = this.tileEntityList.iterator();
 
         while (iterator.hasNext()) {

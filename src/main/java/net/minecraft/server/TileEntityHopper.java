@@ -17,6 +17,43 @@ public class TileEntityHopper extends TileEntity implements IHopper {
     private String i;
     private int j = -1;
 
+    // Spigot start
+    private long nextTick = -1; // Next tick this hopper will be ticked.
+    private long lastTick = -1; // Last tick this hopper was polled.
+    
+    // If this hopper is not cooling down, assaign a visible tick for next time.
+    public void makeTick() {
+        if (!this.j()) {
+            this.c(0);
+        }
+    }
+    
+    // Contents changed, so make this hopper active.
+    public void scheduleHopperTick() {
+        if (this.world != null && this.world.spigotConfig.altHopperTicking) {
+            this.makeTick();
+        }
+    }
+    
+	// Called after this hopper is assaigned a world or when altHopperTicking is turned
+	// on from reload.
+    public void convertToScheduling() {
+    	// j is the cooldown in ticks
+        this.c(this.j);
+    }
+    
+    // Called when alt hopper ticking is turned off from the reload command
+    public void convertToPolling() {
+        long cooldownDiff;
+        if (this.lastTick == this.world.getTime()) {
+            cooldownDiff = this.nextTick - this.world.getTime();
+        } else {
+            cooldownDiff = this.nextTick - this.world.getTime() + 1;
+        }
+        this.c((int) Math.max(0, Math.min(cooldownDiff, Integer.MAX_VALUE)));
+    }
+    // Spigot end
+
     // CraftBukkit start - add fields and methods
     public List<HumanEntity> transaction = new java.util.ArrayList<HumanEntity>();
     private int maxStack = MAX_STACK;
@@ -80,7 +117,20 @@ public class TileEntityHopper extends TileEntity implements IHopper {
         }
 
         nbttagcompound.set("Items", nbttaglist);
-        nbttagcompound.setInt("TransferCooldown", this.j);
+        // Spigot start - Need to write the correct cooldown to disk. We convert from long to int on saving.
+        if (this.world != null && this.world.spigotConfig.altHopperTicking) {
+            long cooldownDiff;
+            if (this.lastTick == this.world.getTime()) {
+                cooldownDiff = this.nextTick - this.world.getTime();
+            } else {
+                cooldownDiff = this.nextTick - this.world.getTime() + 1;
+            }
+            nbttagcompound.setInt("TransferCooldown", (int) Math.max(0, Math.min(cooldownDiff, Integer.MAX_VALUE)));
+        } else {
+        	// j is the cooldown in ticks.
+            nbttagcompound.setInt("TransferCooldown", this.j);
+        }
+        // Spigot end
         if (this.k_()) {
             nbttagcompound.setString("CustomName", this.i);
         }
@@ -88,6 +138,9 @@ public class TileEntityHopper extends TileEntity implements IHopper {
 
     public void update() {
         super.update();
+        // Spigot start - The contents have changed, so make this hopper active.
+        this.scheduleHopperTick();
+        // Spigot end
     }
 
     public int getSize() {
@@ -167,11 +220,21 @@ public class TileEntityHopper extends TileEntity implements IHopper {
 
     public void h() {
         if (this.world != null && !this.world.isStatic) {
-            --this.j;
-            if (!this.j()) {
-                this.c(0);
-                this.i();
+            // Spigot start
+            if (this.world.spigotConfig.altHopperTicking) {
+                this.lastTick = this.world.getTime();
+                if (this.nextTick == this.world.getTime()) {
+                	// Method that does the pushing and pulling.
+                    this.i();
+                }
+            } else {
+                --this.j;
+                if (!this.j()) {
+                    this.c(0);
+                    this.i();
+                }
             }
+            // Spigot end
         }
     }
 
@@ -196,7 +259,7 @@ public class TileEntityHopper extends TileEntity implements IHopper {
             }
 
             // Spigot start
-            if ( !this.j() )
+            if ( !world.spigotConfig.altHopperTicking && !this.j() )
             {
                 this.c( world.spigotConfig.hopperCheck );
             }
@@ -584,10 +647,34 @@ public class TileEntityHopper extends TileEntity implements IHopper {
     }
 
     public void c(int i) {
-        this.j = i;
+        // Spigot start - i is the delay for which this hopper will be ticked next.
+        // i of 1 or below implies a tick next tick.
+        if (this.world != null && this.world.spigotConfig.altHopperTicking) {
+            if (i <= 0) {
+                i = 1;
+            }
+            if (this.lastTick == this.world.getTime()) {
+                this.nextTick = this.world.getTime() + i;
+            } else {
+                this.nextTick = this.world.getTime() + i - 1;
+            }
+        } else {
+            this.j = i;
+        }
+        // Spigot end
     }
 
     public boolean j() {
-        return this.j > 0;
+        // Spigot start - Return whether this hopper is cooling down.
+        if (this.world != null && this.world.spigotConfig.altHopperTicking) {
+            if (this.lastTick == this.world.getTime()) {
+                return this.nextTick > this.world.getTime();
+            } else {
+                return this.nextTick >= this.world.getTime();
+            }
+        } else {
+            return this.j > 0;
+        }
+        // Spigot end
     }
 }
