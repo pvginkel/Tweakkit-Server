@@ -216,9 +216,61 @@ public final class ItemStack {
         if (nbttagcompound.hasKeyOfType("tag", 10)) {
             // CraftBukkit - make defensive copy as this data may be coming from the save thread
             this.tag = (NBTTagCompound) nbttagcompound.getCompound("tag").clone();
+            validateSkullSkin(); // Spigot
         }
     }
 
+    // Spigot start - make sure the tag is given the full gameprofile if it's a skull (async lookup)
+    public void validateSkullSkin()
+    {
+        if ( this.item == Items.SKULL && this.getData() == 3 )
+        {
+            String owner;
+            if ( this.tag.hasKeyOfType( "SkullOwner", 8 ) )
+            {
+                owner = this.tag.getString( "SkullOwner" );
+            } else if ( this.tag.hasKeyOfType( "SkullOwner", 10 ) )
+            {
+                net.minecraft.util.com.mojang.authlib.GameProfile profile = GameProfileSerializer.deserialize( this.tag.getCompound( "SkullOwner" ) );
+                if ( profile == null || !profile.getProperties().isEmpty() )
+                {
+                    return;
+                } else
+                {
+                    owner = profile.getName();
+                }
+            } else
+            {
+                return;
+            }
+
+            final String finalOwner = owner;
+            TileEntitySkull.executor.execute( new Runnable()
+            {
+                @Override
+                public void run()
+                {
+
+                    final net.minecraft.util.com.mojang.authlib.GameProfile profile = TileEntitySkull.skinCache.getUnchecked( finalOwner.toLowerCase() );
+                    if ( profile != null )
+                    {
+                        MinecraftServer.getServer().processQueue.add( new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                NBTTagCompound nbtProfile = new NBTTagCompound();
+                                GameProfileSerializer.serialize( nbtProfile, profile );
+                                ItemStack.this.tag.set( "SkullOwner", nbtProfile );
+                            }
+                        } );
+                    }
+                }
+            } );
+        }
+    }
+    // Spigot end
+    
     public int getMaxStackSize() {
         return this.getItem().getMaxStackSize();
     }
@@ -457,6 +509,7 @@ public final class ItemStack {
 
     public void setTag(NBTTagCompound nbttagcompound) {
         this.tag = nbttagcompound;
+        validateSkullSkin(); // Spigot
     }
 
     public String getName() {

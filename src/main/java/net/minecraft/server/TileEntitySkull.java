@@ -6,11 +6,64 @@ import net.minecraft.util.com.google.common.collect.Iterables;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;
 
+// Spigot start
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import net.minecraft.util.com.mojang.authlib.Agent;
+// Spigot end
+
 public class TileEntitySkull extends TileEntity {
 
     private int a;
     private int i;
     private GameProfile j = null;
+    // Spigot start
+    public static final Executor executor = Executors.newFixedThreadPool(3,
+            new ThreadFactoryBuilder()
+                    .setNameFormat("Head Conversion Thread - %1$d")
+                    .build()
+    );
+    public static final Cache<String, GameProfile> skinCache = CacheBuilder.newBuilder()
+            .maximumSize( 5000 )
+            .expireAfterAccess( 60, TimeUnit.MINUTES )
+            .build( new CacheLoader<String, GameProfile>()
+            {
+                @Override
+                public GameProfile load(String key) throws Exception
+                {
+                    GameProfile[] profiles = new GameProfile[1];
+                    GameProfileLookup gameProfileLookup = new GameProfileLookup(profiles);
+
+                    MinecraftServer.getServer().getGameProfileRepository().findProfilesByNames(new String[] { key }, Agent.MINECRAFT, gameProfileLookup);
+
+                    GameProfile profile = profiles[ 0 ];
+                    if (profile == null) {
+                        UUID uuid = EntityHuman.a(new GameProfile(null, key));
+                        profile = new GameProfile(uuid, key);
+
+                        gameProfileLookup.onProfileLookupSucceeded(profile);
+                    } else
+                    {
+
+                        Property property = Iterables.getFirst( profile.getProperties().get( "textures" ), null );
+
+                        if ( property == null )
+                        {
+                            profile = MinecraftServer.getServer().av().fillProfileProperties( profile, true );
+                        }
+                    }
+
+
+                    return profile;
+                }
+            } );
+    // Spigot end
 
     public TileEntitySkull() {}
 
@@ -66,18 +119,38 @@ public class TileEntitySkull extends TileEntity {
     private void d() {
         if (this.j != null && !UtilColor.b(this.j.getName())) {
             if (!this.j.isComplete() || !this.j.getProperties().containsKey("textures")) {
-                GameProfile gameprofile = MinecraftServer.getServer().getUserCache().getProfile(this.j.getName());
+                // Spigot start - Handle async
+                final String name = this.j.getName();
+                setSkullType( 0 ); // Work around a client bug
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
 
-                if (gameprofile != null) {
-                    Property property = (Property) Iterables.getFirst(gameprofile.getProperties().get("textures"), null);
+                        GameProfile profile = skinCache.getUnchecked( name.toLowerCase() );
 
-                    if (property == null) {
-                        gameprofile = MinecraftServer.getServer().av().fillProfileProperties(gameprofile, true);
+                        if (profile != null) {
+                            final GameProfile finalProfile = profile;
+                            MinecraftServer.getServer().processQueue.add(new Runnable() {
+                                @Override
+                                public void run() {
+                                    a = 3;
+                                    j = finalProfile;
+                                    world.notify( x, y, z );
+                                }
+                            });
+                        } else {
+                            MinecraftServer.getServer().processQueue.add(new Runnable() {
+                                @Override
+                                public void run() {
+                                    a = 3;
+                                    j = new GameProfile( null, name );
+                                    world.notify( x, y, z );
+                                }
+                            });
+                        }
                     }
-
-                    this.j = gameprofile;
-                    this.update();
-                }
+                });
+                // Spigot end
             }
         }
     }
