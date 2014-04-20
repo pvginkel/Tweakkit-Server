@@ -46,13 +46,39 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
     }
 
     @Override
-    void applyToItem(NBTTagCompound tag) {
+    void applyToItem(final NBTTagCompound tag) { // Spigot - make final
         super.applyToItem(tag);
 
         if (hasOwner()) {
             NBTTagCompound owner = new NBTTagCompound();
             GameProfileSerializer.serialize(owner, profile);
-            tag.set(SKULL_OWNER.NBT, owner);
+            tag.set( SKULL_OWNER.NBT, owner );
+            // Spigot start - do an async lookup of the profile. 
+            // Unfortunately there is not way to refresh the holding
+            // inventory, so that responsibility is left to the user.
+            net.minecraft.server.TileEntitySkull.executor.execute( new Runnable()
+            {
+                @Override
+                public void run()
+                {
+
+                    final GameProfile profile = net.minecraft.server.TileEntitySkull.skinCache.getUnchecked( CraftMetaSkull.this.profile.getName().toLowerCase() );
+                    if ( profile != null )
+                    {
+                        MinecraftServer.getServer().processQueue.add( new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                NBTTagCompound owner = new NBTTagCompound();
+                                GameProfileSerializer.serialize( owner, profile );
+                                tag.set( SKULL_OWNER.NBT, owner );
+                            }
+                        } );
+                    }
+                }
+            } );
+            // Spigot end
         }
     }
 
