@@ -45,6 +45,7 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     public SocketAddress n;
     public java.util.UUID spoofedUUID;
     public Property[] spoofedProfile;
+    public boolean preparing = true;
     // Spigot End
     private PacketListener o;
     private EnumProtocol p;
@@ -73,6 +74,9 @@ public class NetworkManager extends SimpleChannelInboundHandler {
         super.channelActive(channelhandlercontext);
         this.m = channelhandlercontext.channel();
         this.n = this.m.remoteAddress();
+        // Spigot Start
+        this.preparing = false;
+        // Spigot End
         this.a(EnumProtocol.HANDSHAKING);
     }
 
@@ -191,6 +195,9 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     }
 
     public void close(IChatBaseComponent ichatbasecomponent) {
+        // Spigot Start
+        this.preparing = false;
+        // Spigot End
         if (this.m.isOpen()) {
             this.m.close();
             this.q = ichatbasecomponent;
