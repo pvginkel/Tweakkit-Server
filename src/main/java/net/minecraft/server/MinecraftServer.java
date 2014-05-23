@@ -419,6 +419,13 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
             if (this.l.d()) {
                 this.l.e();
             }
+            // Spigot start
+            if( org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly )
+            {
+                i.info("Saving usercache.json");
+                this.X.c();
+            }
+            //Spigot end
         }
     }
 
