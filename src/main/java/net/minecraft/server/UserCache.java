@@ -133,7 +133,7 @@ public class UserCache {
             }
         }
 
-        this.c();
+        if( !org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly ) this.c(); // Spigot - skip saving if disabled
         return usercacheentry == null ? null : usercacheentry.a();
     }
 
