@@ -2,6 +2,7 @@ package net.minecraft.server;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,7 @@ public class NBTTagList extends NBTBase {
 
     public NBTTagList() {}
 
-    void write(DataOutput dataoutput) {
+    void write(DataOutput dataoutput) throws IOException {
         if (!this.list.isEmpty()) {
             this.type = ((NBTBase) this.list.get(0)).getTypeId();
         } else {
@@ -28,7 +29,7 @@ public class NBTTagList extends NBTBase {
         }
     }
 
-    void load(DataInput datainput, int i, NBTReadLimiter nbtreadlimiter) {
+    void load(DataInput datainput, int i, NBTReadLimiter nbtreadlimiter) throws IOException {
         if (i > 512) {
             throw new RuntimeException("Tried to read NBT tag with too high complexity, depth > 512");
         } else {
@@ -164,4 +165,60 @@ public class NBTTagList extends NBTBase {
     public int d() {
         return this.type;
     }
+
+    // CraftBukkit start - add additional type accessors
+    public byte getByte(int i) {
+        if (i >= 0 && i < this.list.size()) {
+            NBTBase nbtbase = (NBTBase)this.list.get(i);
+            return com.afterkraft.metadata.NBTType.BYTE.is(nbtbase) ? ((NBTTagByte) nbtbase).f() : 0;
+        } else {
+            return 0;
+        }
+    }
+
+    public short getShort(int i) {
+        if (i >= 0 && i < this.list.size()) {
+            NBTBase nbtbase = (NBTBase)this.list.get(i);
+            return com.afterkraft.metadata.NBTType.SHORT.is(nbtbase) ? ((NBTTagShort) nbtbase).e() : 0;
+        } else {
+            return 0;
+        }
+    }
+
+    public int getInt(int i) {
+        if (i >= 0 && i < this.list.size()) {
+            NBTBase nbtbase = (NBTBase)this.list.get(i);
+            return com.afterkraft.metadata.NBTType.INT.is(nbtbase) ? ((NBTTagInt) nbtbase).d() : 0;
+        } else {
+            return 0;
+        }
+    }
+
+    public long getLong(int i) {
+        if (i >= 0 && i < this.list.size()) {
+            NBTBase nbtbase = (NBTBase)this.list.get(i);
+            return com.afterkraft.metadata.NBTType.LONG.is(nbtbase) ? ((NBTTagLong) nbtbase).c() : 0;
+        } else {
+            return 0;
+        }
+    }
+
+    public byte[] getByteArray(int i) {
+        if (i >= 0 && i < this.list.size()) {
+            NBTBase nbtbase = (NBTBase) this.list.get(i);
+            return com.afterkraft.metadata.NBTType.BYTE_ARRAY.is(nbtbase) ? ((NBTTagByteArray) nbtbase).c() : new byte[0];
+        } else {
+            return new byte[0];
+        }
+    }
+
+    public NBTTagList getList(int i) {
+        if (i >= 0 && i < this.list.size()) {
+            NBTBase nbtbase = (NBTBase)this.list.get(i);
+            return com.afterkraft.metadata.NBTType.LIST.is(nbtbase) ? ((NBTTagList) nbtbase) : new NBTTagList();
+        } else {
+            return new NBTTagList();
+        }
+    }
+    // CraftBukkit end
 }
