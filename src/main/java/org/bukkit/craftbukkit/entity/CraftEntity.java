@@ -17,10 +17,47 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import com.afterkraft.metadata.NBTMetadataStore;
+import com.afterkraft.metadata.PersistentMetadataValue;
+
 public abstract class CraftEntity implements org.bukkit.entity.Entity {
     protected final CraftServer server;
     protected Entity entity;
     private EntityDamageEvent lastDamageEvent;
+    // Tweakkit start
+    private NBTMetadataStore persistantDataStore = new NBTMetadataStore();
+
+    static class EntityMetaKey {
+        @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.SOURCE)
+        @java.lang.annotation.Target(java.lang.annotation.ElementType.FIELD)
+        @interface Specific {
+            enum To {
+                BUKKIT,
+                NBT,
+                ;
+            }
+            To value();
+        }
+
+        final String BUKKIT;
+        final String NBT;
+
+        // Auto-registry of well-known tag names
+        final static java.util.Set<String> BUKKIT_TAGS = new java.util.HashSet<String>();
+        final static java.util.Set<String> NBT_TAGS = new java.util.HashSet<String>();
+
+        EntityMetaKey(final String both) {
+            this(both, both);
+        }
+
+        EntityMetaKey(final String nbt, final String bukkit) {
+            this.NBT = nbt;
+            this.BUKKIT = bukkit;
+            if (bukkit != null) BUKKIT_TAGS.add(bukkit);
+            if (nbt != null) NBT_TAGS.add(nbt);
+        }
+    }
+    // Tweakkit end
 
     public CraftEntity(final CraftServer server, final Entity entity) {
         this.server = server;
@@ -373,21 +410,32 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         return hash;
     }
 
+    // Tweakkit start - Modify for persistant metadata
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-        server.getEntityMetadata().setMetadata(this, metadataKey, newMetadataValue);
+        if (newMetadataValue instanceof PersistentMetadataValue) {
+            persistantDataStore.setPluginMetadata(metadataKey, newMetadataValue);
+        } else {
+            server.getEntityMetadata().setMetadata(this, metadataKey, newMetadataValue);
+        }
     }
 
     public List<MetadataValue> getMetadata(String metadataKey) {
-        return server.getEntityMetadata().getMetadata(this, metadataKey);
+        List<MetadataValue> meta = server.getEntityMetadata().getMetadata(this, metadataKey);
+        if (meta.isEmpty()) {
+            meta = persistantDataStore.getPluginMetadata(metadataKey);
+        }
+        return meta;
     }
 
     public boolean hasMetadata(String metadataKey) {
-        return server.getEntityMetadata().hasMetadata(this, metadataKey);
+        return server.getEntityMetadata().hasMetadata(this, metadataKey) || persistantDataStore.hasPluginMetadata(metadataKey);
     }
 
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         server.getEntityMetadata().removeMetadata(this, metadataKey, owningPlugin);
+        persistantDataStore.removePluginMetadata(metadataKey, owningPlugin);
     }
+    // Tweakkit end
 
     public boolean isInsideVehicle() {
         return getHandle().vehicle != null;
@@ -425,4 +473,25 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         return spigot;
     }
     // Spigot end
+
+    // Tweakkit start
+    public void readCustomData(NBTTagCompound compound) {
+        if (compound.hasKey("tweakkit")) {
+            NBTTagCompound data = compound.getCompound("tweakkit");
+            persistantDataStore = NBTMetadataStore.getFilteredStore(data, EntityMetaKey.NBT_TAGS);
+        }
+    }
+
+    public void saveCustomData(NBTTagCompound compound) {
+        if (!compound.hasKey("tweakkit")) {
+            compound.set("tweakkit", new NBTTagCompound());
+        }
+        NBTTagCompound data = compound.getCompound("tweakkit");
+        if (persistantDataStore != null) {
+            persistantDataStore.applyToTag(data);
+        } else {
+            persistantDataStore = new NBTMetadataStore();
+        }
+    }
+    // Tweakkit end
 }
