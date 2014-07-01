@@ -57,7 +57,8 @@ public class EntitySkeleton extends EntityMonster implements IRangedEntity {
     public boolean n(Entity entity) {
         if (super.n(entity)) {
             if (this.getSkeletonType() == 1 && entity instanceof EntityLiving) {
-                ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.WITHER.id, 200));
+                // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.WITHER.id, 200), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
             }
 
             return true;

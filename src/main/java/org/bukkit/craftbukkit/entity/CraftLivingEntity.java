@@ -52,6 +52,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.entity.ThrownExpBottle;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.WitherSkull;
+import org.bukkit.event.entity.EntityPotionEffectChangeEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -261,9 +262,10 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             if (!force) {
                 return false;
             }
-            removePotionEffect(effect.getType());
+            // removePotionEffect(effect.getType()); // Tweakkit - Now completely unecessary since this is updated internally
         }
-        getHandle().addEffect(new MobEffect(effect.getType().getId(), effect.getDuration(), effect.getAmplifier(), effect.isAmbient()));
+        // Tweakkit
+        getHandle().addEffect(new MobEffect(effect.getType().getId(), effect.getDuration(), effect.getAmplifier(), effect.isAmbient()), EntityPotionEffectChangeEvent.Cause.PLUGIN_ADDED);
         return true;
     }
 
@@ -280,7 +282,8 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     public void removePotionEffect(PotionEffectType type) {
-        getHandle().removeEffect(type.getId());
+        // Tweakkit
+        getHandle().removeEffect(type.getId(), EntityPotionEffectChangeEvent.Cause.PLUGIN_REMOVED);
     }
 
     public Collection<PotionEffect> getActivePotionEffects() {

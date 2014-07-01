@@ -6,6 +6,7 @@ import java.util.List;
 // CraftBukkit start
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.entity.EntityPotionEffectChangeEvent;
 // CraftBukkit end
 
 public class TileEntityBeacon extends TileEntity implements IInventory {
@@ -70,7 +71,8 @@ public class TileEntityBeacon extends TileEntity implements IInventory {
 
             while (iterator.hasNext()) {
                 entityhuman = (EntityHuman) iterator.next();
-                entityhuman.addEffect(new MobEffect(this.m, 180, b0, true));
+                // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.BEACON'
+                entityhuman.addEffect(new MobEffect(this.n, 180, 0, true), EntityPotionEffectChangeEvent.Cause.BEACON);
             }
 
             if (this.l >= 4 && this.m != this.n && this.n > 0) {
@@ -78,7 +80,8 @@ public class TileEntityBeacon extends TileEntity implements IInventory {
 
                 while (iterator.hasNext()) {
                     entityhuman = (EntityHuman) iterator.next();
-                    entityhuman.addEffect(new MobEffect(this.n, 180, 0, true));
+                    // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.BEACON'
+                    entityhuman.addEffect(new MobEffect(this.n, 180, 0, true), EntityPotionEffectChangeEvent.Cause.BEACON);
                 }
             }
         }
