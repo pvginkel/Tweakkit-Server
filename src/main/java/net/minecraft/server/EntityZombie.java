@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityPotionEffectChangeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 //CraftBukkit end
 
@@ -449,8 +450,10 @@ public class EntityZombie extends EntityMonster {
     protected void a(int i) {
         this.bt = i;
         this.getDataWatcher().watch(14, Byte.valueOf((byte) 1));
-        this.removeEffect(MobEffectList.WEAKNESS.id);
-        this.addEffect(new MobEffect(MobEffectList.INCREASE_DAMAGE.id, i, Math.min(this.world.difficulty.a() - 1, 0)));
+        // Tweakkit start - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+        this.removeEffect(MobEffectList.WEAKNESS.id, EntityPotionEffectChangeEvent.Cause.MOB);
+        this.addEffect(new MobEffect(MobEffectList.INCREASE_DAMAGE.id, i, Math.min(this.world.difficulty.a() - 1, 0)), EntityPotionEffectChangeEvent.Cause.MOB);
+        // Tweakkit end
         this.world.broadcastEntityEffect(this, (byte) 16);
     }
 
@@ -474,7 +477,8 @@ public class EntityZombie extends EntityMonster {
 
         this.world.kill(this);
         this.world.addEntity(entityvillager, CreatureSpawnEvent.SpawnReason.CURED); // CraftBukkit - add SpawnReason
-        entityvillager.addEffect(new MobEffect(MobEffectList.CONFUSION.id, 200, 0));
+        // Tweakkit - add 'EntityPotionEffectChangeEvent.Cause.MOB'
+        entityvillager.addEffect(new MobEffect(MobEffectList.CONFUSION.id, 200, 0),EntityPotionEffectChangeEvent.Cause.MOB);
         this.world.a((EntityHuman) null, 1017, (int) this.locX, (int) this.locY, (int) this.locZ, 0);
     }
 

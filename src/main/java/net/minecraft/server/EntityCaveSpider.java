@@ -24,7 +24,8 @@ public class EntityCaveSpider extends EntitySpider {
                 }
 
                 if (b0 > 0) {
-                    ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.POISON.id, b0 * 20, 0));
+                    // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                    ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.POISON.id, b0 * 20, 0), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
                 }
             }
 

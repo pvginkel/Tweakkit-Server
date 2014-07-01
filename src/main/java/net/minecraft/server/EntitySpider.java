@@ -153,7 +153,8 @@ public class EntitySpider extends EntityMonster {
             int i = ((GroupDataSpider) object).a;
 
             if (i > 0 && MobEffectList.byId[i] != null) {
-                this.addEffect(new MobEffect(i, Integer.MAX_VALUE));
+                // Tweakkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                this.addEffect(new MobEffect(i, Integer.MAX_VALUE), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
             }
         }
 
