@@ -176,6 +176,11 @@ public class UserCache {
                 break label81;
             } catch (FileNotFoundException filenotfoundexception) {
                 ;
+            // Spigot Start
+            } catch (net.minecraft.util.com.google.gson.JsonSyntaxException ex) {
+                JsonList.a.warn( "Usercache.json is corrupted or has bad formatting. Deleting it to prevent further issues." );
+                this.g.delete();
+            // Spigot End
             } finally {
                 IOUtils.closeQuietly(bufferedreader);
             }
