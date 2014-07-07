@@ -115,6 +115,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     // Spigot end
 
     public MinecraftServer(OptionSet options, Proxy proxy) { // CraftBukkit - signature file -> OptionSet
+        net.minecraft.util.io.netty.util.ResourceLeakDetector.setEnabled( false ); // Spigot - disable
         this.X = new UserCache(this, a);
         j = this;
         this.d = proxy;
