@@ -1406,7 +1406,7 @@ public abstract class Entity {
 
     public void ac() {
         if (this.passenger != null) {
-            this.passenger.setPosition(this.locX, this.locY + this.ad() + this.passenger.ad(), this.locZ);
+            this.passenger.setPosition(this.locX, this.locY + this.ae() + this.passenger.ad(), this.locZ); // Spigot
         }
     }
 
