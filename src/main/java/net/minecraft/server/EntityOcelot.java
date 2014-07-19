@@ -2,6 +2,7 @@ package net.minecraft.server;
 
 public class EntityOcelot extends EntityTameableAnimal {
 
+    public boolean spawnBonus = true; // Spigot
     private PathfinderGoalTempt bq;
 
     public EntityOcelot(World world) {
@@ -213,7 +214,7 @@ public class EntityOcelot extends EntityTameableAnimal {
 
     public GroupDataEntity prepare(GroupDataEntity groupdataentity) {
         groupdataentity = super.prepare(groupdataentity);
-        if (this.world.random.nextInt(7) == 0) {
+        if (spawnBonus && this.world.random.nextInt(7) == 0) { // Spigot
             for (int i = 0; i < 2; ++i) {
                 EntityOcelot entityocelot = new EntityOcelot(this.world);
 
