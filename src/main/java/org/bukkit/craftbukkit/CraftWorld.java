@@ -1056,6 +1056,12 @@ public class CraftWorld implements World {
         }
 
         if (entity != null) {
+            // Spigot start
+            if (entity instanceof EntityOcelot)
+            {
+                ( (EntityOcelot) entity ).spawnBonus = false;
+            }
+            // Spigot end
             if (entity instanceof EntityInsentient) {
                 ((EntityInsentient) entity).prepare((GroupDataEntity) null);
             }
