@@ -380,7 +380,7 @@ public abstract class PlayerList {
         } else if (!this.isWhitelisted(gameprofile)) {
             // return "You are not white-listed on this server!";
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot
-        } else if (this.k.isBanned(socketaddress) && !this.k.get(gameprofile).hasExpired()) {
+        } else if (this.k.isBanned(socketaddress) && !this.k.get(socketaddress).hasExpired()) { // Spigot
             IpBanEntry ipbanentry = this.k.get(socketaddress);
 
             s = "Your IP address is banned from this server!\nReason: " + ipbanentry.getReason();
