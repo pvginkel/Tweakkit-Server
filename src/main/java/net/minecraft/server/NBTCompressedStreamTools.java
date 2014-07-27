@@ -46,7 +46,7 @@ public class NBTCompressedStreamTools {
 
     public static NBTTagCompound a(byte[] abyte, NBTReadLimiter nbtreadlimiter) {
         try {
-        DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(abyte))));
+        DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(new org.spigotmc.LimitStream(new GZIPInputStream(new ByteArrayInputStream(abyte)), nbtreadlimiter))); // Spigot
 
         NBTTagCompound nbttagcompound;
 
