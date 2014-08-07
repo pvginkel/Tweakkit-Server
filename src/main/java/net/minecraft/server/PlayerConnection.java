@@ -1044,7 +1044,7 @@ public class PlayerConnection implements PacketPlayInListener {
             float f6 = MathHelper.sin(-f1 * 0.017453292F);
             float f7 = f4 * f5;
             float f8 = f3 * f5;
-            double d3 = 5.0D;
+            double d3 = player.playerInteractManager.getGameMode() == EnumGamemode.CREATIVE ? 5.0D : 4.5D; // Spigot
             Vec3D vec3d1 = vec3d.add((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
             MovingObjectPosition movingobjectposition = this.player.world.rayTrace(vec3d, vec3d1, false);
 
