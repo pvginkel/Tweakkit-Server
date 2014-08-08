@@ -18,7 +18,7 @@ public class PersistentCollection {
 
     private IDataManager a;
     private Map b = new HashMap();
-    private List c = new ArrayList();
+    public List c = new ArrayList(); // Spigot
     private Map d = new HashMap();
 
     public PersistentCollection(IDataManager idatamanager) {

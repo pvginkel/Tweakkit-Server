@@ -22,7 +22,7 @@ public class WorldMap extends PersistentBase {
     public byte scale;
     public byte[] colors = new byte[16384];
     public List f = new ArrayList();
-    private Map i = new HashMap();
+    public Map i = new HashMap(); // Spigot
     public Map decorations = new LinkedHashMap();
 
     // CraftBukkit start
