@@ -489,6 +489,12 @@ public class PlayerConnection implements PacketPlayInListener {
 
     public void a(PacketPlayInBlockDig packetplayinblockdig) {
         if (this.player.dead) return; // CraftBukkit
+        // Spigot start
+        if ( player.activeContainer != player.defaultContainer )
+        {
+            getPlayer().closeInventory();
+        }
+        // Spigot end
         WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
 
         this.player.v();
@@ -615,6 +621,12 @@ public class PlayerConnection implements PacketPlayInListener {
         // a notch bug where the item doesn't update correctly.
         boolean always = false;
         // CraftBukkit end
+        // Spigot start
+        if ( player.activeContainer != player.defaultContainer )
+        {
+            getPlayer().closeInventory();
+        }
+        // Spigot end
 
         ItemStack itemstack = this.player.inventory.getItemInHand();
         boolean flag = false;
@@ -1118,6 +1130,12 @@ public class PlayerConnection implements PacketPlayInListener {
             return;
         }
         // Spigot End
+        // Spigot start
+        if ( player.activeContainer != player.defaultContainer )
+        {
+            getPlayer().closeInventory();
+        }
+        // Spigot end
 
         this.player.v();
         if (entity != null) {
