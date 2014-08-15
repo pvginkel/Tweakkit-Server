@@ -87,7 +87,7 @@ public class WorldServer extends World {
         TileEntity result = super.getTileEntity(i, j, k);
         Block type = getType(i, j, k);
 
-        if (type == Blocks.CHEST) {
+        if (type == Blocks.CHEST || type == Blocks.TRAPPED_CHEST) { // Spigot
             if (!(result instanceof TileEntityChest)) {
                 result = fixTileEntity(i, j, k, type, result);
             }
